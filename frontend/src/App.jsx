@@ -14,6 +14,10 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />}></Route>
+
+
+
+        
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>
         {/* Routes for admin */}
