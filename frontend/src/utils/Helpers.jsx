@@ -62,3 +62,19 @@ export const notifyError = (message) => {
     theme: "light",
   });
 };
+
+// Format Date
+export const formatDate = (dateString) => {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+export const getBorderColor = (fieldName, errors, touchedFields) => {
+  if (errors[fieldName]) {
+    return "border-red-500"; // Red border for errors
+  }
+  if (touchedFields[fieldName]) {
+    return "border-green-500"; // Green border for successful validation after interaction
+  }
+  return "border-gray-200"; // Gray border by default
+};

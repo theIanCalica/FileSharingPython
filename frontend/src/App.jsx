@@ -5,6 +5,7 @@ import Homepage from "./pages/user/index";
 // Layouts and pages for admin
 import AdminLayout from "./components/Admin/Layout";
 import AdminHomePage from "./pages/admin/index";
+import UsersPage from "./pages/admin/Users";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         {/* Routes for admin */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomePage />}></Route>
+          <Route path="users" element={<UsersPage />}></Route>
         </Route>
       </Routes>
     </Router>
