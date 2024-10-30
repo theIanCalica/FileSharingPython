@@ -31,7 +31,7 @@ class FolderSerializer(serializers.ModelSerializer):
   class Meta:
     model = Folder
     fields = ['name', 'created_at']
-    read_only_fields = ['id', 'created_at']
+    read_only_fields = ['id', 'created_at'] 
   
 class FileSerializer(serializers.ModelSerializer):
   class Meta:
