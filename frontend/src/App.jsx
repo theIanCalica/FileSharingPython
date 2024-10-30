@@ -9,12 +9,16 @@ import AuthUserLayout from "./components/User/Auth/Layout";
 import AdminLayout from "./components/Admin/Layout";
 import AdminHomePage from "./pages/admin/index";
 import UsersPage from "./pages/admin/Users";
+import SignIn from "./pages/user/signin/signin";
+import SignUp from './pages/user/signup/signup';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />}></Route>
+        <Route path="/signin" element={<SignIn />}></Route>
+        <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/drive" element={<AuthUserLayout />}>
           <Route index element={<index />}></Route>
         </Route>
