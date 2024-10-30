@@ -20,8 +20,9 @@ const UsersPage = () => {
 
   const fetchUsers = () => {
     axios
-      .get(`${process.env.REACT_APP_API_LINK}/users`)
+      .get(`${process.env.REACT_APP_API_LINK}/user`)
       .then((response) => {
+        console.log(response.data);
         setUsers(response.data);
       })
       .catch((err) => {
@@ -209,17 +210,16 @@ const UsersPage = () => {
           <thead>
             <tr>
               <th className="py-2 px-4 border-b text-left">ID</th>
-              <th className="py-2 px-4 border-b text-left">Name</th>
-              <th className="py-2 px-4 border-b text-left">Date of Birth</th>
+              <th className="py-2 px-4 border-b text-left">First Name</th>
+              <th className="py-2 px-4 border-b text-left">Last Name</th>
               <th className="py-2 px-4 border-b text-left">Email</th>
-              <th className="py-2 px-4 border-b text-left">Phone</th>
+              <th className="py-2 px-4 border-b text-left">Last Login</th>
               <th className="py-2 px-4 border-b text-left">Role</th>
-              <th className="py-2 px-4 border-b text-left">Status</th>
               <th className="py-2 px-4 border-b text-left">Profile</th>
               <th className="py-2 px-4 border-b text-left">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          {/* <tbody>
             {users.map((user) => (
               <tr key={user._id} className="hover:bg-slate-50">
                 <td className="py-2 px-4 border-b">{user._id}</td>
@@ -287,7 +287,7 @@ const UsersPage = () => {
                 </td>
               </tr>
             ))}
-          </tbody>
+          </tbody> */}
         </table>
       </div>
       <ToastContainer />

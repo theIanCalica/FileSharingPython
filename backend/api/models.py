@@ -1,6 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    public_id = models.CharField(max_length=255, blank=True, null=True)
+    url = models.CharField(max_length=255, blank=True, null=True)
+
 class File(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the built-in User model
     file_name = models.CharField(max_length=255)
@@ -36,7 +41,6 @@ class LinkShare(models.Model):
     expiration_date = models.DateTimeField(blank=True, null=True)
     password = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    max_downloads = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return f"Link for {self.file.file_name}"
