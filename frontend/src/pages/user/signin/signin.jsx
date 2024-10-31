@@ -69,19 +69,21 @@ const SignIn = () => {
         </div>
 
         <form onSubmit={handleSubmit(onValid, onInvalid)}>
-          <label>Username*</label>
-          <input
-            id="username"
-            type="text"
-            placeholder="Enter your username"
-            className={`${getBorderColor("username", errors, touchedFields)}`}
-            {...register("username", {
-              required: "Username is required",
-            })}
-          />
-          {errors.username && (
-            <p className="error-message">{errors.username.message}</p>
-          )}
+          <div className="mb-4">
+            <label>Username*</label>
+            <input
+              id="username"
+              type="text"
+              placeholder="Enter your username"
+              className={`${getBorderColor("username", errors, touchedFields)}`}
+              {...register("username", {
+                required: "Username is required",
+              })}
+            />
+            {errors.username && (
+              <p className="text-red-500">{errors.username.message}</p>
+            )}
+          </div>
 
           <label>Password*</label>
           <input
