@@ -1,16 +1,21 @@
-import React from 'react';
-import './signup.css'; // Link to custom CSS for styling
-
+import React from "react";
+import "./signup.css"; // Link to custom CSS for styling
+import client from "../../../utils/client";
+import { Link } from "react-router-dom";
 const SignUp = () => {
   return (
     <div className="signup-container">
       {/* Left side - Sign Up Form */}
       <div className="signup-form">
         <div className="logo">
-          <img src="/images/logo.png" alt="Your Logo" style={{ width: '150px', height: 'auto' }} />
+          <img
+            src="/images/logo.png"
+            alt="Your Logo"
+            style={{ width: "150px", height: "auto" }}
+          />
           <p>FileGuard</p>
         </div>
-        
+
         {/* Divider */}
         <div className="divider">
           <span>Or</span>
@@ -19,25 +24,13 @@ const SignUp = () => {
         {/* Sign Up Form */}
         <form>
           <label>Full Name*</label>
-          <input
-            type="text"
-            placeholder="Ex: John Doe"
-            required
-          />
+          <input type="text" placeholder="Ex: John Doe" required />
 
-        <label>Username*</label>
-          <input
-            type="text"
-            placeholder="Ex: johndoe123"
-            required
-          />
+          <label>Username*</label>
+          <input type="text" placeholder="Ex: johndoe123" required />
 
           <label>Email Address*</label>
-          <input
-            type="email"
-            placeholder="mail@example.com"
-            required
-          />
+          <input type="email" placeholder="mail@example.com" required />
 
           <label>Password*</label>
           <input
@@ -51,16 +44,19 @@ const SignUp = () => {
           {/* Terms Agreement */}
           <div className="terms">
             <label>
-              <input type="checkbox" required /> By creating an account you agree to the terms of use and our privacy policy.
+              <input type="checkbox" required /> By creating an account you
+              agree to the terms of use and our privacy policy.
             </label>
           </div>
 
           {/* Sign Up Button */}
-          <button type="submit" className="signup-button">Sign Up</button>
-          
+          <button type="submit" className="signup-button">
+            Sign Up
+          </button>
+
           {/* Sign In Link */}
           <p className="existing-account">
-            Already have an account? <a href="#">Sign In</a>
+            Already have an account? <Link to={"/signin"}>Sign In</Link>
           </p>
         </form>
       </div>
@@ -69,14 +65,14 @@ const SignUp = () => {
       <div
         className="signup-image"
         style={{
-          backgroundColor: 'white', // Set white background color
+          backgroundColor: "white", // Set white background color
           backgroundImage: "url('/images/login-image.png')",
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center center', // Center the image
-          backgroundSize: '50%', // Reduce size to 50%
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center center", // Center the image
+          backgroundSize: "50%", // Reduce size to 50%
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       ></div>
     </div>

@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api'
+    'api',
+    'user_api.apps.UserApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -46,6 +47,8 @@ ROOT_URLCONF = 'my_core_project.urls'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000'
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 TEMPLATES = [
     {

@@ -5,28 +5,8 @@ from datetime import datetime
 from django.utils.crypto import get_random_string
 import hashlib
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = ['public_id', 'url']
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id','password', 'last_login', 'is_superuser', 'username', 'email', 'first_name', 'last_name', 'is_active']
-        extra_kwargs = {'password': {'write_only': True}}
 
-    def create(self, validated_data):
-        user = User(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
-      
 class FolderSerializer(serializers.ModelSerializer):
   class Meta:
     model = Folder
