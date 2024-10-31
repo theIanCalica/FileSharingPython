@@ -5,13 +5,10 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import TheatersIcon from "@mui/icons-material/Theaters";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
-import EmailIcon from "@mui/icons-material/Email";
 import MessageIcon from "@mui/icons-material/Message";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import ArticleIcon from "@mui/icons-material/Article";
 import { Link, useNavigate } from "react-router-dom";
 // import { logout } from "../../../Utils/helpers";
 import Swal from "sweetalert2";
@@ -308,48 +305,6 @@ const Sidebar = ({ isMinimized }) => {
               }}
             >
               Profile
-            </span>
-          </li>
-        </Link>
-
-        {/*    */}
-        <Link to="messages">
-          <li
-            className="mt-3 py-2 px-8 text-gray-400 cursor-pointer flex items-center w-full transition-colors duration-300 ease-in-out relative"
-            onMouseOver={() => setHovered("message")}
-            onMouseOut={() => setHovered(null)}
-            onClick={() => handleItemClick("message")}
-            style={{
-              backgroundColor:
-                hovered === "message" || selected === "message"
-                  ? "#FAFAFB"
-                  : "transparent",
-            }}
-          >
-            {selected === "message" && <></>}
-            <div className="mr-5 rounded-md transition-colors duration-300 ease-in-out">
-              <MessageIcon
-                style={{
-                  color: "#5A6AFF",
-                  fontSize: "1.7rem",
-                  lineHeight: "1",
-                }}
-                className="p-1"
-              />
-            </div>
-            <span
-              className={`transition-all ease-in-out duration-500 ${
-                isMinimized ? "hidden" : "block"
-              }`}
-              style={{
-                fontSize: "16px",
-                color:
-                  hovered === "message" || selected === "message"
-                    ? "605BFF"
-                    : "#9ca3af",
-              }}
-            >
-              Message
             </span>
           </li>
         </Link>
