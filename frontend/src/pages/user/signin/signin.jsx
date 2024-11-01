@@ -9,7 +9,7 @@ import {
 } from "../../../utils/Helpers";
 import client from "../../../utils/client";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 const SignIn = () => {
   const navigate = useNavigate();
   const {
@@ -24,14 +24,17 @@ const SignIn = () => {
   const onValid = async (data) => {
     try {
       const url = `${process.env.REACT_APP_API_LINK}/login/`;
-      const response = await client.post(url, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      notifySuccess("Sign-in successful!");
-      navigate("/drive");
-      reset();
+      const response = await client
+        .post(url, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          notifySuccess("Sign-in successful!");
+          navigate("/drive");
+          reset();
+        });
     } catch (error) {
       notifyError("Sign-in failed. Please check your credentials.");
       console.error(error);
