@@ -1,0 +1,110 @@
+.carousel-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 0;
+
+  .swiper {
+    overflow: hidden;
+  }
+
+  .swiper-pagination {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+
+    .swiper-pagination-bullet {
+      width: 12px;
+      height: 12px;
+      background-color: #ddd;
+      border-radius: 50%;
+      opacity: 0.7;
+      transition: background-color 0.3s, opacity 0.3s;
+
+      &-active {
+        background-color: rgba(0, 132, 255, 0.8); /* Active color */
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.carousel-slide {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the left */
+  height: 400px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0.8; /* Set transparency for all elements */
+
+  .carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(70%);
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .slide-content {
+    position: absolute;
+    color: #fff;
+    text-align: left; /* Align text to the left */
+    max-width: 600px;
+    padding: 1rem;
+    opacity: 0; /* Start with opacity 0 for animation */
+    transform: translateY(20px); /* Start position for entrance effect */
+    animation: slideIn 0.8s forwards; /* Apply animation */
+    animation-delay: 0.2s; /* Delay for smoother entrance */
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0.5rem 0;
+      color: #fff; /* Ensure text is visible */
+      font-family: 'Roboto', sans-serif; /* Apply modern font */
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9; /* Text opacity */
+      font-family: 'Roboto', sans-serif; /* Apply modern font */
+    }
+
+    .signup-button {
+      padding: 0.8rem 1.5rem;
+      background-color: rgba(0, 132, 255, 0.8); /* Make button semi-transparent */
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      opacity: 0; /* Start with opacity 0 for animation */
+      transform: translateY(20px); /* Start position for entrance effect */
+      animation: slideIn 0.8s forwards; /* Apply animation */
+      animation-delay: 0.4s; /* Delay for button entrance */
+
+      &:hover {
+        background-color: rgba(0, 132, 255, 0.8); /* Semi-transparent hover */
+      }
+    }
+  }
+}
+
+/* Define the entrance animation */
+@keyframes slideIn {
+  to {
+    opacity: 5; /* Fade in */
+    transform: translateY(0); /* Move to final position */
+  }
+}
