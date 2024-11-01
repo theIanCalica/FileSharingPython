@@ -8,9 +8,10 @@ router.register('folder', FolderViewSet, basename='folder')
 
 # Define urlpatterns with both router and custom paths
 urlpatterns = [
-    path('register', UserRegister.as_view(), name="register"),
+    path('check-unique/', check_unique, name="check_unique"),
+    path('register/', UserRegister.as_view(), name="register"),
     path('login/', UserLogin.as_view(), name='login'),
-    path('logout', UserLogout.as_view(), name='logout'),
+    path('logout/', UserLogout.as_view(), name='logout'),
 ]
 
 # Include the router-generated URLs

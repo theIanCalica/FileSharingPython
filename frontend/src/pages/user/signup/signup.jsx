@@ -79,20 +79,15 @@ const SignUp = () => {
     <div className="signup-container">
       {/* Left side - Sign Up Form */}
       <div className="signup-form">
-        <div className="logo">
+        <div className="flex flex-col justify-center items-center">
           <img
             src="/images/logo.png"
             alt="Your Logo"
-            style={{ width: "150px", height: "auto" }}
+            className="p-5"
+            style={{ width: "150px", height: "140px" }}
           />
-          <p>FileGuard</p>
+          <p className="text-2xl font-bold font-sans">FileGuard</p>
         </div>
-
-        {/* Divider */}
-        <div className="divider">
-          <span>Or</span>
-        </div>
-
         {/* Sign Up Form */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
@@ -159,7 +154,8 @@ const SignUp = () => {
               id="email"
               type="email"
               placeholder="mail@example.com"
-              className={`${getBorderColor("email", errors, touchedFields)}`}
+              style={{ margin: 0 }}
+              className={` ${getBorderColor("email", errors, touchedFields)}`}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -179,6 +175,7 @@ const SignUp = () => {
               id="password"
               type="password"
               placeholder="Min. 8 characters"
+              style={{ margin: 0 }}
               className={`${getBorderColor("password", errors, touchedFields)}`}
               {...register("password", {
                 required: "Password is required",
