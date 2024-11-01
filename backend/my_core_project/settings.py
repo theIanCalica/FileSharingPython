@@ -13,8 +13,7 @@ SECRET_KEY = 'django-insecure-1(mjh@n&%xk_gu78=y&h@a6wmg^gwzfvyk+lq0wx7ht+xke5y)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 AES_KEY = os.getenv('AES_KEY')
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -42,14 +41,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'my_core_project.urls'
 
+
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'None'  # Or 'Lax', but 'None' allows cross-site cookies
+CSRF_COOKIE_SECURE = False  # Set to True in production when using HTTPS
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -78,9 +86,18 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'iancalica245',
-        'HOST': 'localhost',  # Replace with your PostgreSQL server's address if necessary
-        'PORT': '5432',          # Leave empty to use the default PostgreSQL port (usually 5432)
+        'HOST': 'localhost',  
+        'PORT': '5432',        
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
 }
 
 # Password validation
