@@ -10,6 +10,17 @@ from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from .validations import * 
 
+class UserRegister(APIView):
+    permission_classes = (permissions.AllowAny)
+    def post(self, request):
+        clean_data = register_validation(request.data)
+        serializer = UserRegisterSerializer(data=clean_data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.create(clean_data)
+            if user:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+        
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = (SessionAuthentication,)
