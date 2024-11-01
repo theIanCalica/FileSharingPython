@@ -28,7 +28,7 @@ const Navbar = () => {
           navigate("/signin");
         });
     } catch (err) {
-      notifyError("Please fix the errors before submitting.");
+      notifyError("Something went wrong.");
       console.error(err);
     }
   };

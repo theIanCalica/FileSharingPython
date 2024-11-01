@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from .validations import * 
+
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = (SessionAuthentication,)
@@ -23,10 +24,12 @@ class UserLogin(APIView):
             login(request,user)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-@api_view(["POST"])
-def logout(request):
-    logout(request)
-    return Response({"message": "Logout successful"}, status=200)
+class UserLogout(APIView):
+	permission_classes = (permissions.AllowAny,)
+	authentication_classes = ()
+	def post(self, request):
+		logout(request)
+		return Response(status=status.HTTP_200_OK)
             
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
