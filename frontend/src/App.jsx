@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Homepage from "./pages/user/Auth/index";
 
 // Pages for authenticated user
@@ -33,6 +35,7 @@ function App() {
           <Route path="profile" element={<ProfileAdmin />}></Route>
         </Route>
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }
