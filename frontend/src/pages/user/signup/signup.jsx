@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./signup.css";
 import client from "../../../utils/client";
 import { Link } from "react-router-dom";
@@ -11,16 +11,57 @@ import {
 } from "../../../utils/Helpers";
 
 const SignUp = () => {
+  const [isUsernameUnique, setIsUsernameUnique] = useState(true);
+  const [isEmailUnique, setIsEmailUnique] = useState(true);
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    watch,
     reset,
+    setError,
     formState: { errors, touchedFields },
   } = useForm({
     mode: "onChange",
   });
 
+  const username = watch("username");
+  const email = watch("email");
+
+  useEffect(() => {
+    const checkUniqueness = async () => {
+      if (username) {
+        const response = await client.get("/check-unique/", {
+          params: { username },
+        });
+        setIsUsernameUnique(response.data.is_username_unique);
+        if (!response.data.is_username_unique) {
+          setError("username", {
+            type: "manual",
+            message: "Username already exists",
+          });
+        }
+      }
+    };
+
+    const checkEmailUniqueness = async () => {
+      if (email) {
+        const response = await client.get("/check-unique/", {
+          params: { email },
+        });
+        setIsEmailUnique(response.data.is_email_unique);
+        if (!response.data.is_email_unique) {
+          setError("email", {
+            type: "manual",
+            message: "Email already exists",
+          });
+        }
+      }
+    };
+
+    checkUniqueness();
+    checkEmailUniqueness();
+  }, [username, email, setError]);
   const onSubmit = async (data) => {
     try {
       // Submit form data to API endpoint
