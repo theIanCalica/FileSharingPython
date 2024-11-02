@@ -7,6 +7,14 @@ export const authenticate = (data) => {
     localStorage.setItem("user", JSON.stringify(data.user));
   }
 };
+
+export const setToken = (data) => {
+  if (window !== "undefined") {
+    localStorage.setItem("access_token", JSON.stringify(data.access));
+    localStorage.setItem("refresh_token", JSON.stringify(data.refresh));
+  }
+};
+
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const getToken = () => {
