@@ -87,7 +87,7 @@ const Home = () => {
       <div className="about-container">
         <div className="left-side">
           <img
-            src="/images/home-about.jpeg"
+            src="/images/home-about.jpg"
             alt="About Us"
             className="big-image"
           />
