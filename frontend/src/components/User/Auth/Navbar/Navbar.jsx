@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import client from "../../../../utils/client";
 import { notifyError, notifySuccess, logout } from "../../../../utils/Helpers";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 const Navbar = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -17,21 +18,31 @@ const Navbar = () => {
     console.log("Profile clicked");
   };
 
-  const handleLogoutClick = async () => {
+  const handleLogoutClick = () => {
     console.log("Logout clicked");
     const url = `${process.env.REACT_APP_API_LINK}/logout/`;
-    try {
-      const response = await client
-        .post(url, { withCredentials: true })
-        .then((response) => {
-          notifySuccess("Logout Successfully");
-          logout();
-          navigate("/signin");
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log me out!",
+    }).then(async (result) => {
+      try {
+        await client.post(url, { withCredentials: true }).then((response) => {
+          if (response.status === 200) {
+            notifySuccess("Logout Successfully");
+            logout();
+            navigate("/signin");
+          }
         });
-    } catch (err) {
-      notifyError("Something went wrong.");
-      console.error(err);
-    }
+      } catch (err) {
+        notifyError("Something went wrong.");
+        console.error(err);
+      }
+    });
   };
 
   return (
