@@ -12,7 +12,7 @@ from rest_framework.authentication import SessionAuthentication
 from .validations import * 
 
 class UserRegister(APIView):
-    permission_classes = (permissions.AllowAny)
+    permission_classes = [permissions.AllowAny]
     def post(self, request):
         clean_data = register_validation(request.data)
         serializer = UserRegisterSerializer(data=clean_data)

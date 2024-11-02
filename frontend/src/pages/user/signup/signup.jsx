@@ -65,7 +65,7 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     try {
       // Submit form data to API endpoint
-      await client.post("/signup", data);
+      await client.post("/register/", data);
       notifySuccess("Registration successful!");
       navigate("/signin");
       reset();

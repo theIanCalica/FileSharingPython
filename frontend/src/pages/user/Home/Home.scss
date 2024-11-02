@@ -68,16 +68,16 @@
 
     h1 {
       font-size: 2.5rem;
-      margin: 0.5rem 0;
+      margin: 0.5rem 0 1rem; /* Increased bottom margin for spacing */
       color: #fff; /* Ensure text is visible */
-      font-family: 'Roboto', sans-serif; /* Apply modern font */
+      font-family: 'Arial', sans-serif; /* Change font style */
     }
 
     p {
       font-size: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.5rem; /* Increased bottom margin for spacing */
       opacity: 0.9; /* Text opacity */
-      font-family: 'Roboto', sans-serif; /* Apply modern font */
+      font-family: 'Arial', sans-serif; /* Change font style */
     }
 
     .signup-button {
@@ -104,7 +104,184 @@
 /* Define the entrance animation */
 @keyframes slideIn {
   to {
-    opacity: 5; /* Fade in */
+    opacity: 1; /* Fade in */
     transform: translateY(0); /* Move to final position */
+  }
+}
+
+/* About Section Styles */
+.about-container {
+  display: flex;
+  height: 100vh;
+
+  .left-side {
+    flex: 1; // Takes half of the container
+    display: flex;
+    align-items: center; // Center the image vertically
+    justify-content: center; // Center the image horizontally
+
+    .big-image {
+      width: 80%; // Adjust the width as needed (e.g., 80% of the parent container)
+      height: auto; // Maintain aspect ratio
+      max-width: 400px; // Reduced max-width for the image
+      border-radius: 10px; // Optional: Add some rounding
+    }
+  }
+
+  .right-side {
+    flex: 1; // Takes the other half of the container
+    display: flex;
+    flex-direction: column; // Stack items vertically
+    padding: 20px; // Add some padding
+
+    .first-div {
+      display: flex;
+      align-items: center; // Align text and line vertically
+      margin-bottom: 40px; // Increased bottom margin for spacing
+
+      hr {
+        width: 50%; // Reduced horizontal line length
+        border: 1px solid #ccc; // Line style
+        margin-right: 10px; // Space between line and text
+      }
+
+      span {
+        font-size: 1.5rem;
+        font-weight: bold;
+        font-family: 'Arial', sans-serif; // Change font style
+      }
+    }
+
+    .second-div {
+      margin-bottom: 40px; // Increased bottom margin for spacing
+
+      h1 {
+        font-size: 2rem;
+        margin: 0; // Remove default margin
+        font-family: 'Arial', sans-serif; // Change font style
+      }
+    }
+
+    .third-div {
+      margin-bottom: 40px; // Increased bottom margin for spacing
+
+      p {
+        font-size: 1rem;
+        line-height: 1.5; // Better readability
+        font-family: 'Arial', sans-serif; // Change font style
+      }
+    }
+
+    .fourth-div {
+      display: flex;
+      justify-content: flex-start; // Align button to the left
+
+      .more-info-button {
+        padding: 10px 20px; // Button padding
+        border: none;
+        border-radius: 50px; // Oval shape
+        background-color: #4285F4; // Button color
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #357ae8; // Darker color on hover
+        }
+      }
+    }
+  }
+}
+
+.benefits-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  
+  .benefits-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .benefits-divider {
+      flex: 1;
+      height: 2px;
+      background-color: #4285F4; /* Adjust color as needed */
+      margin-right: 10px;
+    }
+    
+    h2 {
+      margin: 0;
+      font-size: 1.5rem; /* Adjust font size as needed */
+    }
+  }
+
+  .benefits-title {
+    text-align: center;
+
+    h1 {
+      margin: 0;
+      font-size: 2rem; /* Adjust font size as needed */
+    }
+  }
+
+  .benefits-description {
+    text-align: center;
+    margin: 1rem 0;
+
+    p {
+      max-width: 600px; /* Limit the width of the paragraph */
+      text-align: center;
+      font-size: 1rem; /* Adjust font size as needed */
+      line-height: 1.5;
+    }
+  }
+
+  .benefits-features {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* Full width */
+    max-width: 1200px; /* Limit the maximum width */
+    margin: 1rem 0;
+
+    .feature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+
+      .feature-icon {
+        width: 50px; /* Adjust icon size */
+        height: 50px; /* Adjust icon size */
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.9rem; /* Adjust font size as needed */
+      }
+    }
+  }
+
+  .benefits-signup {
+    margin-top: 1rem;
+
+    .signup-button {
+      padding: 0.8rem 1.5rem;
+      background-color: #4285F4; /* Adjust color as needed */
+      color: #ffffff;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #357ae8; /* Adjust hover color */
+      }
+    }
   }
 }

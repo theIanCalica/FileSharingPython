@@ -1,8 +1,8 @@
 // frontend/src/components/User/Auth/Layout.jsx
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "../Navbar/Navbar"; // Adjust this path if Navbar is in a different folder
-import Footer from "../Footer/Footer"; // Adjust this based on your actual structure
+import Navbar from "./Navbar/Navbar";
+import Footer from "./Footer/Footer";
 
 const Layout = () => {
   return (

@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Homepage from "./pages/user/Auth/index";
+
+// Pages for the home pages and layout
+import Homepage from "./pages/user/Home/Home";
+import HomeLayout from "./components/User/layout";
 
 // Pages for authenticated user
 import AuthUserPage from "./pages/user/Auth/index";
@@ -21,7 +24,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Homepage />}></Route>
+        <Route path="/" element={<HomeLayout />}>
+          <Route index element={<Homepage />}></Route>
+        </Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/drive" element={<AuthUserLayout />}>
