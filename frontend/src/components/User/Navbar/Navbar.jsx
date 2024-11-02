@@ -4,7 +4,7 @@ import "./Navbar.scss";
 
 const Navbar = () => {
   return (
-    <nav>
+    <nav className="nav">
       <div className="navbar-logo">
         <img src="/images/logo.png" alt="Logo" />
         <span className="highlight-text">FileGuard</span>{" "}

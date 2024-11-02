@@ -20,7 +20,7 @@ const UsersPage = () => {
 
   const fetchUsers = () => {
     axios
-      .get(`${process.env.REACT_APP_API_LINK}/user`)
+      .get(`${process.env.REACT_APP_API_LINK}/users`)
       .then((response) => {
         console.log(response.data);
         setUsers(response.data);
@@ -152,12 +152,12 @@ const UsersPage = () => {
 
     if (result.isConfirmed) {
       axios
-        .delete(`${process.env.REACT_APP_API_LINK}/users/${userID}`)
+        .delete(`${process.env.REACT_APP_API_LINK}/users/${userID}/`)
         .then((response) => {
-          if (response.status === 200) {
+          if (response.status === 204) {
             notifySuccess("Successfully Deleted");
             setUsers((prevUsers) =>
-              prevUsers.filter((user) => user._id !== userID)
+              prevUsers.filter((user) => user.id !== userID)
             );
           } else {
             notifyError("Deletion Unsuccessful");
@@ -168,13 +168,6 @@ const UsersPage = () => {
           console.error(error.message);
         });
     }
-  };
-
-  const formatRole = (role) => {
-    if (role === "serviceCrew") {
-      return "Service Crew";
-    }
-    return role.charAt(0).toUpperCase() + role.slice(1);
   };
 
   return (
@@ -219,22 +212,18 @@ const UsersPage = () => {
               <th className="py-2 px-4 border-b text-left">Actions</th>
             </tr>
           </thead>
-          {/* <tbody>
+          <tbody>
             {users.map((user) => (
               <tr key={user._id} className="hover:bg-slate-50">
-                <td className="py-2 px-4 border-b">{user._id}</td>
-                <td className="py-2 px-4 border-b">
-                  {user.fname + " " + user.lname}
-                </td>
-                <td className="py-2 px-4 border-b">
-                  {user.dob ? formatDate(user.dob) : null}
-                </td>
-
+                <td className="py-2 px-4 border-b">{user.id}</td>
+                <td className="py-2 px-4 border-b">{user.first_name}</td>
+                <td className="py-2 px-4 border-b">{user.last_name}</td>
                 <td className="py-2 px-4 border-b">{user.email}</td>
-                <td className="py-2 px-4 border-b">{user.phoneNumber}</td>
-                <td className="py-2 px-4 border-b">{formatRole(user.role)}</td>
                 <td className="py-2 px-4 border-b">
-                  {formatRole(user.status)}
+                  {formatDate(user.last_login)}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  {user.is_superuser ? "Admin" : "User"}
                 </td>
                 <td>
                   {user.profile ? (
@@ -267,27 +256,25 @@ const UsersPage = () => {
                     <MenuItem onClick={handleEdit}>
                       <EditOutlinedIcon className="mr-2" /> Edit
                     </MenuItem>
-                    {selectedUser?.status === "activated" ? (
+                    {selectedUser?.is_active === "activated" ? (
                       <MenuItem
-                        onClick={() => handleDeactivate(selectedUser._id)}
+                        onClick={() => handleDeactivate(selectedUser.id)}
                       >
                         <NoAccountsIcon className="mr-2" /> Deactivate
                       </MenuItem>
                     ) : (
-                      <MenuItem
-                        onClick={() => handleActivate(selectedUser._id)}
-                      >
+                      <MenuItem onClick={() => handleActivate(selectedUser.id)}>
                         <NoAccountsIcon className="mr-2" /> Activate
                       </MenuItem>
                     )}
-                    <MenuItem onClick={() => handleDelete(selectedUser._id)}>
+                    <MenuItem onClick={() => handleDelete(selectedUser.id)}>
                       <DeleteOutlineOutlinedIcon className="mr-2" /> Delete
                     </MenuItem>
                   </Menu>
                 </td>
               </tr>
             ))}
-          </tbody> */}
+          </tbody>
         </table>
       </div>
       <ToastContainer />

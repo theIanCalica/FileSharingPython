@@ -8,6 +8,7 @@ import {
   notifyError,
   notifySuccess,
   getBorderColor,
+  authenticate,
 } from "../../../utils/Helpers";
 
 const SignUp = () => {
@@ -65,10 +66,12 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     try {
       // Submit form data to API endpoint
-      await client.post("/register/", data);
-      notifySuccess("Registration successful!");
-      navigate("/signin");
-      reset();
+      await client.post("/register/", data).then((response) => {
+        reset();
+        notifySuccess("Registration successful!");
+        authenticate(response.data);
+        navigate("/drive");
+      });
     } catch (error) {
       notifyError("Registration failed. Please try again.");
       console.error(error);

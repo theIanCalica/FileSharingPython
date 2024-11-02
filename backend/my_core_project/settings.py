@@ -1,5 +1,12 @@
 from pathlib import Path
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from datetime import timedelta
+
+from dotenv import load_dotenv
+load_dotenv()  
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -11,11 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1(mjh@n&%xk_gu78=y&h@a6wmg^gwzfvyk+lq0wx7ht+xke5y)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'  # Ensures it's interpreted as a boolean
 AES_KEY = os.getenv('AES_KEY')
 ALLOWED_HOSTS = ['*']
-
-# Application definition
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -25,9 +30,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'rest_framework',
     'api',
     'user_api.apps.UserApiConfig',
+    'file_management',
+    
 ]
 
 MIDDLEWARE = [
@@ -41,23 +50,28 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+cloudinary.config(
+    cloud_name= os.getenv("CLOUDINARY_NAME"),
+    api_key= os.getenv("CLOUDINARY_API_KEY"),
+    api_secret= os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 ROOT_URLCONF = 'my_core_project.urls'
 
-
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000'
 ]
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000'
-]
-
 CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_SAMESITE = 'None'  # Or 'Lax', but 'None' allows cross-site cookies
-CSRF_COOKIE_SECURE = False  # Set to True in production when using HTTPS
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_COOKIE_HTTPONLY = False  # Allows JavaScript to read it
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -83,11 +97,11 @@ WSGI_APPLICATION = 'my_core_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'iancalica245',
-        'HOST': 'localhost',  
-        'PORT': '5432',        
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),  
+        'PORT': os.getenv("DB_PORT"),        
     }
 }
 
@@ -96,8 +110,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    ),
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
 
 # Password validation

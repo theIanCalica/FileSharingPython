@@ -8,6 +8,7 @@
     "@amcharts/amcharts5-geodata": "^5.1.4",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@flaticon/flaticon-uicons": "^3.3.1",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/x-date-pickers": "^5.0.0",

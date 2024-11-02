@@ -51,7 +51,7 @@ const Profile = () => {
             {/* User Details */}
             <div>
               <h2 className="text-xl font-semibold">
-                {user.fname + " " + user.lname}
+                {user.first_name + " " + user.last_name}
               </h2>
               <p className="text-gray-600">
                 {user?.email || "admin@example.com"}

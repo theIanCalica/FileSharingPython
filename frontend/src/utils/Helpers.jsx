@@ -1,40 +1,46 @@
 import { toast } from "react-toastify";
 
-export const authenticate = (data, next) => {
+export const authenticate = (data) => {
   if (window !== "undefined") {
-    sessionStorage.setItem("token", JSON.stringify(data.token));
-    sessionStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("access_token", JSON.stringify(data.access));
+    localStorage.setItem("refresh_token", JSON.stringify(data.refresh));
+    localStorage.setItem("user", JSON.stringify(data.user));
   }
-  next();
 };
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const getToken = () => {
-  if (window !== "undefined") {
-    if (sessionStorage.getItem("token")) {
-      return JSON.parse(sessionStorage.getItem("token"));
+  if (typeof window !== "undefined") {
+    // Check if the window object is defined
+    const accessToken = localStorage.getItem("access_token");
+    const refreshToken = localStorage.getItem("refresh_token");
+
+    // Check if both tokens exist
+    if (accessToken && refreshToken) {
+      return { accessToken, refreshToken };
     } else {
       return false;
     }
   }
+  return false;
 };
 
 export const getUser = () => {
   if (typeof window !== "undefined") {
-    if (sessionStorage.getItem("user")) {
-      return JSON.parse(sessionStorage.getItem("user"));
+    if (localStorage.getItem("user")) {
+      return JSON.parse(localStorage.getItem("user"));
     } else {
       return false;
     }
   }
 };
 
-export const logout = (next) => {
+export const logout = () => {
   if (window !== "undefined") {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
   }
-  next();
 };
 
 // Notify success message using Toastify

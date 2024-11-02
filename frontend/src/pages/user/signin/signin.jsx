@@ -6,10 +6,10 @@ import {
   notifyError,
   notifySuccess,
   getBorderColor,
+  authenticate,
 } from "../../../utils/Helpers";
 import client from "../../../utils/client";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 const SignIn = () => {
   const navigate = useNavigate();
   const {
@@ -32,8 +32,9 @@ const SignIn = () => {
         })
         .then((response) => {
           notifySuccess("Sign-in successful!");
-          navigate("/drive");
           reset();
+          authenticate(response.data);
+          navigate("/drive");
         });
     } catch (error) {
       notifyError("Sign-in failed. Please check your credentials.");

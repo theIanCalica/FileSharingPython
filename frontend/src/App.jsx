@@ -10,6 +10,8 @@ import HomeLayout from "./components/User/layout";
 // Pages for authenticated user
 import AuthUserPage from "./pages/user/Auth/index";
 import AuthUserLayout from "./components/User/Auth/Layout";
+import AuthFiles from "./pages/user/Auth/Files";
+import AuthProfile from "./pages/user/Auth/Profile";
 
 // Layouts and pages for admin
 import AdminLayout from "./components/Admin/Layout";
@@ -31,6 +33,8 @@ function App() {
         <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/drive" element={<AuthUserLayout />}>
           <Route index element={<AuthUserPage />}></Route>
+          <Route path="folders" element={<AuthFiles />}></Route>
+          <Route path="profile" element={<AuthProfile />}></Route>
         </Route>
         {/* Routes for admin */}
         <Route path="/admin" element={<AdminLayout />}>

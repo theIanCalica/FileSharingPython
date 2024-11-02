@@ -257,36 +257,7 @@ const Profile = ({
               </p>
             )}
           </div>
-          <div className="mb-4 col-span-2 mx-auto w-96">
-            <label htmlFor="phoneNumber" className="block text-gray-700 mb-2">
-              Phone Number
-            </label>
-            <input
-              id="phoneNumber"
-              type="text"
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md h-14 ${getBorderColor(
-                "phoneNumber",
-                errors,
-                touchedFields
-              )}`}
-              {...register("phoneNumber", {
-                required: "Phone Number is required",
-                pattern: {
-                  value: /^((09)|(\+639))\d{9}$/,
-                  message: "Invalid phone number format",
-                },
-                onChange: async (value) => {
-                  console.log(value);
-                },
-              })}
-              maxLength={11}
-            />
-            {errors.phoneNumber && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.phoneNumber.message}
-              </p>
-            )}
-          </div>
+
           <div className="flex justify-end col-span-1 md:col-span-2">
             <button
               type="button"

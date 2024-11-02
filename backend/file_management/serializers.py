@@ -1,33 +1,41 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import *
+from django.contrib.auth import get_user_model,authenticate
+from rest_framework.exceptions import ValidationError
 from datetime import datetime
 from django.utils.crypto import get_random_string
 import hashlib
 
+UserModel = get_user_model()
 
 
-class FolderSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Folder
-    fields = ['name', 'created_at']
-    read_only_fields = ['id', 'created_at'] 
-  
 class FileSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = File
-    fields = ['id', 'file_name', 'file', 'description', 'upload_date', 'is_public', 'user']
-  
-  def create(self, validated_data):
-    file = File(
-      file_name=validated_data['file_name'],
-      description=validated_data['description']    
-    )
+    class Meta:
+        model = File
+        fields = ['file', 'file_name']
+    def validate_file_url(self, value):
+        if not value:
+            raise serializers.ValidationError("File URL cannot be empty.")
+        return value
 
-class FolderFileSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = FolderFile
-    fields = ['folder', 'file']
+    def validate_file_name(self, value):
+        if not value:
+            raise serializers.ValidationError("File name cannot be empty.")
+        return value
+
+    def validate_user(self, value):
+        if not value:
+            raise serializers.ValidationError("User cannot be empty.")
+        return value
+    
+    def validate_file(self, value):
+        # Allowed file types
+        allowed_extensions = ['.pdf', '.docx', '.jpg', '.png', ".jpeg", ".zip"]
+        if not value.name.endswith(tuple(allowed_extensions)):
+            raise serializers.ValidationError("Unsupported file type. Allowed types are: .pdf, .docx, .jpg, .png")
+        return value
+    
 
 class SharedFileSerializer(serializers.ModelSerializer):
   class Meta:

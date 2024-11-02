@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import "~@flaticon/flaticon-uicons/css/all/all";
 body {
   margin: 0;
   padding: 0;

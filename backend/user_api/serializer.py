@@ -1,9 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import *
-from datetime import datetime
-from django.utils.crypto import get_random_string
-import hashlib
 from django.contrib.auth import get_user_model,authenticate
 from rest_framework.exceptions import ValidationError
 
@@ -36,10 +33,17 @@ class UserLoginSerializer(serializers.Serializer):
       raise ValidationError('User not found')
     return user
 
+
+class UserObjSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'date_joined', 'last_login']  # List all fields except 'password'
+
+# For user CRUD
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','password', 'last_login', 'is_superuser', 'username', 'email', 'first_name', 'last_name', 'is_active']
+        fields = ['id','password','last_login', 'is_superuser' ,'is_active', 'username', 'email', 'first_name', 'last_name']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):

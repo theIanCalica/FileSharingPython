@@ -10,6 +10,14 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from .validations import * 
+from django.http import JsonResponse
+from rest_framework_simplejwt.tokens import RefreshToken
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_count(request):
+    user_count = User.objects.count()
+    return JsonResponse({"user_count": user_count}) 
 
 class UserRegister(APIView):
     permission_classes = [permissions.AllowAny]
@@ -19,7 +27,15 @@ class UserRegister(APIView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.create(clean_data)
             if user:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                refresh_token = str(refresh)
+                user_data = UserObjSerializer(user).data
+                return Response({
+                    'user': user_data,
+                    'access': access_token,
+                    'refresh': refresh_token
+                }, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
@@ -48,11 +64,17 @@ class UserLogin(APIView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.check_user(data)
             login(request,user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(user)
+            user_data = UserObjSerializer(user).data
+            return Response({
+                'user': user_data,
+                'access': str(refresh.access_token),
+                'refresh': str(refresh)
+            }, status=status.HTTP_200_OK)
 
 class UserLogout(APIView):
 	permission_classes = (permissions.AllowAny,)
-	authentication_classes = ()
+	authentication_classes = () 
 	def post(self, request):
 		logout(request)
 		return Response(status=status.HTTP_200_OK)
@@ -68,18 +90,9 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def retrieve(self, request, pk=None):
-        """Get a single user by primary key (pk)."""
-        try:
-            user = User.objects.get(pk=pk)
-            serializer = self.get_serializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
     def create(self, request):
         """Create a new user."""
-        serializer = self.get_serializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

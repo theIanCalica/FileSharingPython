@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button, Divider, Typography, Menu, MenuItem } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -6,9 +6,19 @@ import PeopleIcon from "@mui/icons-material/People";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
+import { useNavigate } from "react-router-dom";
+import client from "../../../../utils/client";
+import {
+  getToken,
+  notifyError,
+  notifySuccess,
+} from "../../../../utils/Helpers";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
+  const fileInputRef = useRef(null);
+  const formRef = useRef(null); // Reference for the form
 
   // Handle menu open
   const handleClick = (event) => {
@@ -22,14 +32,51 @@ const Sidebar = () => {
 
   // Handle option click (upload or new folder)
   const handleMenuOptionClick = (option) => {
-    console.log(`Selected option: ${option}`);
+    if (option === "Upload File") {
+      fileInputRef.current.click(); // Open file manager
+    }
     handleClose();
   };
 
+  // Handle file selection
+  const handleFileChange = (event) => {
+    const files = event.target.files; // Get the files from the input
+    const formData = new FormData(formRef.current); // Create a FormData object from the form
+
+    // Append each selected file to the FormData object
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]); // Use the same key for multiple files
+    }
+
+    // Optionally, you can prevent form submission if you are handling the file upload here
+    event.preventDefault();
+
+    uploadFiles(formData); // Call the function to handle upload
+  };
+
+  // Function to upload files
+  const uploadFiles = async (formData) => {
+    try {
+      const response = await client.post("/upload/", formData, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": undefined,
+        },
+        withCredentials: true,
+      });
+      notifySuccess("File(s) uploaded successfully!", response.data);
+    } catch (error) {
+      notifyError("Something went wrong");
+      console.error(error.message);
+    }
+  };
+
+  const handleMyDriveClick = () => {
+    navigate("/drive/folders");
+  };
+
   return (
-    <div
-      style={{ width: "250px", padding: "10px", backgroundColor: "#f5f7fa" }}
-    >
+    <div style={{ width: "250px", padding: "10px" }}>
       {/* Logo */}
       <div
         className="flex-col mt-10"
@@ -73,10 +120,23 @@ const Sidebar = () => {
         <MenuItem onClick={() => handleMenuOptionClick("Upload File")}>
           Upload File
         </MenuItem>
-        <MenuItem onClick={() => handleMenuOptionClick("New Folder")}>
-          New Folder
-        </MenuItem>
       </Menu>
+
+      {/* Form for file upload */}
+      <form
+        ref={formRef}
+        onSubmit={(e) => e.preventDefault()}
+        encType="multipart/form-data"
+      >
+        {/* Invisible file input for file upload */}
+        <input
+          type="file"
+          multiple
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
+      </form>
 
       {/* Menu Items */}
       <div style={{ marginBottom: "20px" }}>
@@ -92,6 +152,7 @@ const Sidebar = () => {
         </Button>
         <Button
           startIcon={<DescriptionIcon />}
+          onClick={handleMyDriveClick}
           style={{
             justifyContent: "flex-start",
             width: "100%",

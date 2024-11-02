@@ -8,6 +8,7 @@ import Map from "../../components/Admin/Map";
 import { notifySuccess, notifyError } from "../../utils/Helpers";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
+import client from "../../utils/client";
 
 const Home = () => {
   const loggedIn = useSelector((state) => state.user.loggedIn);
@@ -15,51 +16,26 @@ const Home = () => {
   const [orderCount, setOrderCount] = useState(0);
   const [bookingCount, setBookingCount] = useState(0);
 
-  // const getNumberofUsers = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_LINK}/users/count`
-  //     );
-  //     console.log(response);
-  //     setUserCount(response.data.count);
-  //   } catch (err) {
-  //     console.error("Error fetching user count:", err);
-  //   }
-  // };
+  const getNumberofUsers = async () => {
+    try {
+      const response = await client.get(
+        `${process.env.REACT_APP_API_LINK}/user-count`
+      );
+      setUserCount(response.data.user_count);
+    } catch (err) {
+      console.error("Error fetching user count:", err);
+    }
+  };
 
-  // const getNumberOfOrder = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_LINK}/orders/count`
-  //     );
-  //     console.log(response);
-  //     setOrderCount(response.data.count);
-  //   } catch (err) {
-  //     console.error("Error fetching order count:", err);
-  //   }
-  // };
+  useEffect(() => {
+    getNumberofUsers();
+    // getNumberOfOrder();
+    // getNumberOfBooking();
 
-  // const getNumberOfBooking = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_LINK}/bookings/count`
-  //     );
-  //     console.log(response);
-  //     setBookingCount(response.data.count);
-  //   } catch (err) {
-  //     console.error("Error fetching booking count:", err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getNumberofUsers();
-  //   getNumberOfOrder();
-  //   getNumberOfBooking();
-
-  //   if (loggedIn && user && user.role === "admin") {
-  //     notifySuccess("Successfully logged in");
-  //   }
-  // }, [loggedIn, user]);
+    // if (loggedIn && user && user.role === "admin") {
+    //   notifySuccess("Successfully logged in");
+    // }
+  }, [loggedIn]);
   return (
     <div>
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
@@ -85,10 +61,6 @@ const Home = () => {
             Download Report
           </button>
         </div>
-      </div>
-
-      <div className="flex justify-between gap-4 mt-5">
-        <PieChart />
       </div>
 
       <div className="container mt-5 bg-white p-4 shadow-md rounded-lg">

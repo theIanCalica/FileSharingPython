@@ -1,10 +1,8 @@
 from django.contrib import admin
-from .models import *
+from file_management.models import *
 
 # Register your models here.
 admin.site.register(File)
-admin.site.register(Folder)
-admin.site.register(FolderFile)
 admin.site.register(SharedFile)
 admin.site.register(LinkShare)
 

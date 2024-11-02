@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  notifyError,
-  notifySuccess,
-  getBorderColor,
-} from "../../../utils/Helpers";
-import axios from "axios";
-
+import { getBorderColor } from "../../../utils/Helpers";
+import client from "../../../utils/client";
 const UserModal = ({
   onClose,
   notifySuccess,
@@ -15,6 +10,8 @@ const UserModal = ({
   isEditing,
   refresh,
 }) => {
+  const [isUsernameUnique, setIsUsernameUnique] = useState(true);
+  const [isEmailUnique, setIsEmailUnique] = useState(true);
   const checkEmail = async (email) => {
     try {
       const response = await fetch("/api/check-email", {
@@ -43,30 +40,65 @@ const UserModal = ({
     register,
     handleSubmit,
     reset,
+    watch,
     setError,
     formState: { errors, touchedFields },
   } = useForm({
-    mode: "onChange",
+    mode: "onchange",
     defaultValues: {
       fname: "",
       lname: "",
+      username: "",
       email: "",
       password: "",
     },
   });
 
+  const username = watch("username");
+  const email = watch("email");
   useEffect(() => {
-    console.log("userToEdit:", userToEdit);
+    const checkUniqueness = async () => {
+      if (username) {
+        const response = await client.get("/check-unique/", {
+          params: { username },
+        });
+        setIsUsernameUnique(response.data.is_username_unique);
+        if (!response.data.is_username_unique) {
+          setError("username", {
+            type: "manual",
+            message: "Username already exists",
+          });
+        }
+      }
+    };
+
+    const checkEmailUniqueness = async () => {
+      if (email) {
+        const response = await client.get("/check-unique/", {
+          params: { email },
+        });
+        setIsEmailUnique(response.data.is_email_unique);
+        if (!response.data.is_email_unique) {
+          setError("email", {
+            type: "manual",
+            message: "Email already exists",
+          });
+        }
+      }
+    };
+
+    checkUniqueness();
+    checkEmailUniqueness();
+
     if (isEditing && userToEdit) {
       reset({
-        fname: userToEdit.fname,
-        lname: userToEdit.lname,
+        fname: userToEdit.first_name,
+        lname: userToEdit.last_name,
         email: userToEdit.email,
+        username: userToEdit.username,
       });
     }
-  }, [isEditing, userToEdit, reset]);
-
-  const [isEmailUnique, setIsEmailUnique] = useState(true);
+  }, [isEditing, userToEdit, reset, username, email]);
 
   const onSubmit = (data) => {
     if (!isEmailUnique) {
@@ -75,19 +107,20 @@ const UserModal = ({
     }
 
     const user = {
-      fname: data.fname,
-      lname: data.lname,
+      first_name: data.fname,
+      last_name: data.lname,
       email: data.email,
+      username: data.username,
       password: data.password,
     };
 
     console.log(user);
 
     const url = isEditing
-      ? `${process.env.REACT_APP_API_LINK}/users/${userToEdit._id}`
-      : `${process.env.REACT_APP_API_LINK}/users`;
+      ? `${process.env.REACT_APP_API_LINK}/users/${userToEdit._id}/`
+      : `${process.env.REACT_APP_API_LINK}/users/`;
     const method = isEditing ? "PUT" : "POST";
-    axios({
+    client({
       method,
       url,
       headers: {
@@ -164,6 +197,26 @@ const UserModal = ({
           </div>
 
           <div className="mb-4">
+            <label htmlFor="username" className="block text-gray-700 mb-2">
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              className={`w-full px-3 py-2 border border-gray-300 rounded-md h-14 ${getBorderColor(
+                "username",
+                errors,
+                touchedFields
+              )}`}
+              {...register("username", { required: "Username is required" })}
+            />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
+          <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 mb-2">
               Email
             </label>
@@ -202,27 +255,6 @@ const UserModal = ({
             {!isEmailUnique && !errors.email && (
               <p className="text-red-500 text-sm mt-1">
                 Email is already taken
-              </p>
-            )}
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700 mb-2">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md h-14 ${getBorderColor(
-                "username",
-                errors,
-                touchedFields
-              )}`}
-              {...register("username", { required: "Username is required" })}
-            />
-            {errors.username && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.username.message}
               </p>
             )}
           </div>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import client from "../../../../utils/client";
-import { notifyError, notifySuccess } from "../../../../utils/Helpers";
+import { notifyError, notifySuccess, logout } from "../../../../utils/Helpers";
 import { useNavigate } from "react-router-dom";
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,12 +19,13 @@ const Navbar = () => {
 
   const handleLogoutClick = async () => {
     console.log("Logout clicked");
-    const url = `${process.env.REACT_APP_API_LINK}/logout`;
+    const url = `${process.env.REACT_APP_API_LINK}/logout/`;
     try {
       const response = await client
         .post(url, { withCredentials: true })
         .then((response) => {
           notifySuccess("Logout Successfully");
+          logout();
           navigate("/signin");
         });
     } catch (err) {
