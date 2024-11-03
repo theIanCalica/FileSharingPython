@@ -26,9 +26,9 @@ const refreshAccessToken = async () => {
       );
 
       // Save new tokens
-      const { accessToken, refreshToken: newRefreshToken } = response.data; // Adjust based on your API response structure
-      setToken({ accessToken, refreshToken: newRefreshToken }); // Update the token in local storage or your state management
-      return accessToken;
+      const { access } = response.data; // Adjust based on your API response structure
+      setToken({ access }); // Update the token in local storage or your state management
+      return access;
     } catch (error) {
       console.error("Failed to refresh token:", error);
       throw error; // Rethrow error to handle in the request interceptor

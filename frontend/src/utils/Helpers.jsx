@@ -11,7 +11,6 @@ export const authenticate = (data) => {
 export const setToken = (data) => {
   if (window !== "undefined") {
     localStorage.setItem("access_token", JSON.stringify(data.access));
-    localStorage.setItem("refresh_token", JSON.stringify(data.refresh));
   }
 };
 

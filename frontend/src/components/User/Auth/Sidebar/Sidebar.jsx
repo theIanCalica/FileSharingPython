@@ -86,7 +86,7 @@ const Sidebar = () => {
   };
 
   const handleMyDriveClick = () => {
-    navigate("/drive/folders");
+    navigate("/drive/files");
   };
 
   return (

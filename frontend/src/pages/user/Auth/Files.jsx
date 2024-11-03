@@ -1,37 +1,67 @@
 import React, { useEffect, useState } from "react";
 import client from "../../../utils/client";
+import { notifyError, notifySuccess } from "../../../utils/Helpers";
+
 const Files = () => {
   const [files, setFiles] = useState([]);
+  const [decryptedFiles, setDecryptedFiles] = useState({});
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const fetchFiles = async () => {
     try {
-      await client.get("/files").then((response) => {
-        setFiles(response.data);
-        console.log(response);
-      });
+      const response = await client.get("/files");
+      setFiles(response.data);
     } catch (error) {
       console.error("Error fetching files:", error);
     }
   };
 
-  const getFileTypeIcon = (filename) => {
-    const extension = filename.split(".").pop().toLowerCase();
-    switch (extension) {
+  const getFileTypeIcon = (fileType) => {
+    switch (fileType) {
       case "pdf":
-        return "/icons/pdf-icon.png"; // Replace with actual path to PDF icon
+        return "/images/pdf-icon.png";
       case "doc":
       case "docx":
-        return "/icons/word-icon.png"; // Replace with actual path to Word icon
+        return "/images/word-icon.png";
       case "jpg":
       case "jpeg":
       case "png":
-        return "/icons/image-icon.png"; // Replace with actual path to image icon
+        return "/images/image-icon.png";
       case "xls":
       case "xlsx":
-        return "/icons/excel-icon.png"; // Replace with actual path to Excel icon
+        return "/images/excel-icon.png";
       default:
-        return "/icons/file-icon.png"; // Default file icon
+        return "/images/file-icon.png";
     }
+  };
+
+  const handleDecrypt = async (fileId) => {
+    try {
+      const response = await client.post(`/files/${fileId}/decrypt`);
+      setDecryptedFiles((prev) => ({
+        ...prev,
+        [fileId]: response.data.decryptedUrl,
+      }));
+      setActiveDropdown(null); // Close dropdown after action
+    } catch (error) {
+      console.error("Error decrypting file:", error);
+    }
+  };
+
+  const handleDelete = async (fileId) => {
+    try {
+      await client.delete(`/files/${fileId}/delete/ `);
+      setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+      notifySuccess("Successfully Deleted");
+      setActiveDropdown(null); // Close dropdown after action
+    } catch (err) {
+      notifyError("Error deleting file");
+      console.error("Error deleting file:", err);
+    }
+  };
+
+  const toggleDropdown = (fileId) => {
+    setActiveDropdown(activeDropdown === fileId ? null : fileId); // Toggle the dropdown for the specific file
   };
 
   useEffect(() => {
@@ -41,18 +71,57 @@ const Files = () => {
   return (
     <div>
       <h2 className="font-sans font-bold text-2xl">My Files</h2>
-      <ul>
-        {/* {files.map((file, index) => (
-          <li key={index} style={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={getFileTypeIcon(file)}
-              alt="file icon"
-              style={{ width: 24, height: 24, marginRight: 8 }}
-            />
-            <span>{file.file_name}</span>
-          </li>
-        ))} */}
-      </ul>
+      <table className="w-full border-collapse">
+        <thead>
+          <tr>
+            <th className="border px-4 py-2">File Icon</th>
+            <th className="border px-4 py-2">File Name</th>
+            <th className="border px-4 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {files.map((file) => (
+            <tr key={file.id} className="text-center">
+              <td className="border px-4 py-2 flex justify-center items-center">
+                <img
+                  src={getFileTypeIcon(file.file_type)}
+                  alt="file icon"
+                  style={{ width: 70, height: 70 }}
+                />
+              </td>
+              <td className="border px-4 py-2">{file.file_name}</td>
+              <td className="border px-4 py-2 relative">
+                <button
+                  onClick={() => toggleDropdown(file.id)}
+                  className="text-gray-800 font-bold py-1 px-2 rounded-full"
+                >
+                  <i className="fi fi-br-menu-dots-vertical"></i>
+                </button>
+                {activeDropdown === file.id && (
+                  <div
+                    key={`dropdown-${file.id}`} // Add unique key for the dropdown
+                    className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10"
+                    style={{ position: "absolute" }}
+                  >
+                    <button
+                      onClick={() => handleDecrypt(file.id)}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Decrypt
+                    </button>
+                    <button
+                      onClick={() => handleDelete(file.id)}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
