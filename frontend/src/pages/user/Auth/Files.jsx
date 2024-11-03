@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import client from "../../../utils/client";
-import { notifyError, notifySuccess } from "../../../utils/Helpers";
+import { formatDate, notifyError, notifySuccess } from "../../../utils/Helpers";
+import Swal from "sweetalert2";
 
 const Files = () => {
   const [files, setFiles] = useState([]);
@@ -22,7 +23,7 @@ const Files = () => {
         return "/images/pdf-icon.png";
       case "doc":
       case "docx":
-        return "/images/word-icon.png";
+        return "/images/docx-icon.png";
       case "jpg":
       case "jpeg":
       case "png":
@@ -37,26 +38,127 @@ const Files = () => {
 
   const handleDecrypt = async (fileId) => {
     try {
-      const response = await client.post(`/files/${fileId}/decrypt`);
-      setDecryptedFiles((prev) => ({
-        ...prev,
-        [fileId]: response.data.decryptedUrl,
-      }));
-      setActiveDropdown(null); // Close dropdown after action
+      console.log(fileId);
+
+      // Show the loading SweetAlert
+      let timerInterval;
+      Swal.fire({
+        title: "Decrypting...",
+        html: "Please wait while we decrypt your file. <b></b> milliseconds left.",
+        timer: 8000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      });
+
+      // Make the API call to decrypt the file
+      const response = await client.post(`/files/${fileId}/decrypt/`, null, {
+        responseType: "blob", // Ensure the response type is set to blob
+      });
+
+      // Access Content-Disposition header
+      const contentDisposition = response.headers["content-disposition"];
+      if (!contentDisposition) {
+        console.error("Content-Disposition header is null.");
+        Swal.fire({
+          icon: "error",
+          title: "Download Failed",
+          text: "File was decrypted but couldn't retrieve the file name.",
+        });
+        return;
+      }
+
+      // Extract the filename from the Content-Disposition header
+      const filenameMatch = contentDisposition.match(/filename="?([^";]+)"?/);
+      const filename =
+        filenameMatch && filenameMatch[1]
+          ? filenameMatch[1]
+          : "downloaded_file";
+
+      // Create a URL for the Blob response using the correct MIME type from the headers
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"], // Use the MIME type from the response
+      });
+      const url = window.URL.createObjectURL(blob);
+
+      // Create an anchor element and trigger download
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = filename; // Use the parsed filename
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url); // Clean up the URL object
+
+      // Close the SweetAlert once the decryption is complete
+      Swal.close();
+
+      // Reset the active dropdown
+      setActiveDropdown(null);
     } catch (error) {
+      // Close the SweetAlert and show an error alert if the decryption fails
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Decryption Failed",
+        text: "There was an error decrypting the file. Please try again.",
+      });
+
       console.error("Error decrypting file:", error);
     }
   };
 
   const handleDelete = async (fileId) => {
     try {
-      await client.delete(`/files/${fileId}/delete/ `);
+      // Show the loading SweetAlert
+      let timerInterval;
+      Swal.fire({
+        title: "Deleting...",
+        html: "Please wait while the file is being deleted. <b></b> milliseconds left.",
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      });
+
+      // Make the API call to delete the file
+      await client.delete(`/files/${fileId}/delete/`);
+
+      // Update the file list
       setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+
+      // Close the SweetAlert and show success notification
+      Swal.close();
       notifySuccess("Successfully Deleted");
-      setActiveDropdown(null); // Close dropdown after action
+
+      // Reset the active dropdown
+      setActiveDropdown(null);
     } catch (err) {
-      notifyError("Error deleting file");
+      // Close the SweetAlert and show an error alert if the deletion fails
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Deletion Failed",
+        text: "There was an error deleting the file. Please try again.",
+      });
+
       console.error("Error deleting file:", err);
+      notifyError("Error deleting file");
     }
   };
 
@@ -76,6 +178,7 @@ const Files = () => {
           <tr>
             <th className="border px-4 py-2">File Icon</th>
             <th className="border px-4 py-2">File Name</th>
+            <th className="border px-4 py-2">Upload Date</th>
             <th className="border px-4 py-2">Actions</th>
           </tr>
         </thead>
@@ -90,6 +193,9 @@ const Files = () => {
                 />
               </td>
               <td className="border px-4 py-2">{file.file_name}</td>
+              <td className="border px-4 py-2">
+                {formatDate(file.upload_date)}
+              </td>
               <td className="border px-4 py-2 relative">
                 <button
                   onClick={() => toggleDropdown(file.id)}
@@ -107,7 +213,7 @@ const Files = () => {
                       onClick={() => handleDecrypt(file.id)}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      Decrypt
+                      Decrypt and Download
                     </button>
                     <button
                       onClick={() => handleDelete(file.id)}

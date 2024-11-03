@@ -12,6 +12,9 @@ from cloudinary.exceptions import NotFound
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 import base64
+from django.http import FileResponse
+import io
+import mimetypes
 
 
 # Encryption function for AES
@@ -21,6 +24,47 @@ def encrypt_file(file_data):
     nonce = cipher.nonce
     ciphertext, tag = cipher.encrypt_and_digest(file_data)
     return key, nonce, ciphertext, tag
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def decrypt_file(request, pk):
+    try:
+        # Retrive the file instance
+        file_instance = File.objects.get(pk=pk)
+        # Extract the encryption components
+        key = base64.b64decode(file_instance.key)
+        nonce = base64.b64decode(file_instance.nonce)
+        ciphertext = base64.b64decode(file_instance.ciphertext)
+        tag = base64.b64decode(file_instance.tag)
+
+        # Create a new AES cipher object for decrpytion
+        cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+        decrypted_data = cipher.decrypt_and_verify(ciphertext, tag)
+
+        # Determine the correct MIME type using the file_type field
+        mime_type = mimetypes.types_map.get(
+            f".{file_instance.file_type}", "application/octet-stream"
+        )
+        # Prepare the decrypted data for download
+        response = FileResponse(io.BytesIO(decrypted_data), content_type=mime_type)
+        response["Content-Disposition"] = (
+            f'attachment; filename="{file_instance.file_name}"'
+        )
+        print(file_instance.file_name)
+        return response
+    except File.DoesNotExist:
+        return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+    except ValueError as e:
+        return Response(
+            {"detail": f"Decryption failed: {str(e)}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    except Exception as e:
+        return Response(
+            {"detail": f"An error occurred: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["GET"])
@@ -55,7 +99,7 @@ def file_upload_view(request):
         file_extension = os.path.splitext(file.name)[1].lower().replace(".", "")
         upload_options = {
             "folder": cloudinary_folder,
-            "resource_type": "auto",
+            "resource_type": "raw",
         }
 
         try:
@@ -64,16 +108,22 @@ def file_upload_view(request):
             cloudinary_url = upload_result.get("secure_url")
             public_id = upload_result.get("public_id")  # Get the public_id
 
+            # Encode encryption components in Base64
+            encoded_key = base64.b64encode(key).decode()
+            encoded_nonce = base64.b64encode(nonce).decode()
+            encoded_ciphertext = base64.b64encode(ciphertext).decode()
+            encoded_tag = base64.b64encode(tag).decode()
+
             # Prepare data for serializer
             serializer_data = {
                 "file_name": original_filename,
                 "file_url": cloudinary_url,
                 "public_id": public_id,  # Include public_id in serializer data
                 "user": request.user.id,
-                "key": base64.b64encode(key).decode(),
-                "nonce": base64.b64encode(nonce).decode(),
-                "ciphertext": base64.b64encode(ciphertext).decode(),
-                "tag": base64.b64encode(tag).decode(),
+                "key": encoded_key,
+                "nonce": encoded_nonce,
+                "ciphertext": encoded_ciphertext,
+                "tag": encoded_tag,
                 "file_type": file_extension,
             }
 
@@ -101,16 +151,9 @@ def file_upload_view(request):
 
 
 def check_resource_exists(public_id):
-    """
-    Check if a resource exists in Cloudinary.
-
-    :param public_id: The public ID of the resource to check.
-    :return: The resource information if found, otherwise None.
-    """
     try:
         # Attempt to retrieve the resource information from Cloudinary
-        resource_info = api.resource(public_id)
-        print("Resource found:", resource_info)  # Debugging output
+        resource_info = api.resource(public_id, resource_type="raw")
         return resource_info
     except NotFound:
         # If the resource does not exist, print a message and return None
@@ -136,8 +179,8 @@ def file_delete_view(request, pk):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        # public_id = file_instance.public_id.strip()
-        public_id = "user_1/ek2nv3ftyqf0cpoujz8q"
+        public_id = file_instance.public_id
+
         # Check if the resource exists in Cloudinary
         resource_info = check_resource_exists(public_id)
         if resource_info is None:
@@ -148,9 +191,9 @@ def file_delete_view(request, pk):
 
         # Attempt to delete the resource from Cloudinary
         try:
-            print(file_instance.public_id)  # Log the public ID
-            response = cloudinary.uploader.destroy(file_instance.public_id)
-            print(f"Cloudinary response: {response}")
+            response = cloudinary.uploader.destroy(
+                file_instance.public_id, resource_type="raw"
+            )
 
             if response.get("result") == "ok":
                 # File deleted successfully from Cloudinary

@@ -4,7 +4,6 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from datetime import timedelta
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -68,7 +67,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_HTTPONLY = False  # Allows JavaScript to read it
-
+CORS_EXPOSE_HEADERS = ["Content-Disposition"]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

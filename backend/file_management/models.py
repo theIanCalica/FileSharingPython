@@ -11,10 +11,10 @@ class File(models.Model):
     public_id = models.CharField(max_length=255, unique=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     file_type = models.CharField(max_length=255, default="unknown")
-    key = models.BinaryField(default=b"")
-    nonce = models.BinaryField(default=b"")
-    ciphertext = models.BinaryField(default=b"")
-    tag = models.BinaryField(default=b"")
+    key = models.TextField()  # Store the encoded key
+    nonce = models.TextField()  # Store the encoded nonce
+    ciphertext = models.TextField()  # Store the encoded ciphertext
+    tag = models.TextField()
 
     def __str__(self):
         return self.file_name

@@ -15,10 +15,11 @@ urlpatterns = [
     path("login/", UserLogin.as_view(), name="login"),
     path("logout/", UserLogout.as_view(), name="logout"),
     path("user-count/", get_user_count, name="user-count"),
+    path("change-password/", change_password, name="change_password"),
     path("upload/", file_upload_view, name="file_upload"),
     path("files/<int:pk>/delete/", file_delete_view, name="file-delete"),
     path("files/", file_list_view, name="file-list"),
-    path("change-password/", change_password, name="change_password"),
+    path("files/<int:pk>/decrypt/", decrypt_file, name="decrypt-file"),
 ]
 
 # Include the router-generated URLs

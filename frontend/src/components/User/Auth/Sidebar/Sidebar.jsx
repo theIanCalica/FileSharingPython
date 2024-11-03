@@ -3,16 +3,11 @@ import { Button, Divider, Typography, Menu, MenuItem } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import DescriptionIcon from "@mui/icons-material/Description";
 import PeopleIcon from "@mui/icons-material/People";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import { useNavigate } from "react-router-dom";
 import client from "../../../../utils/client";
-import {
-  getToken,
-  notifyError,
-  notifySuccess,
-} from "../../../../utils/Helpers";
+import { notifyError, notifySuccess } from "../../../../utils/Helpers";
 import ProgressBar from "@ramonak/react-progress-bar";
 
 const Sidebar = () => {
