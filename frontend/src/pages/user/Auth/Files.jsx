@@ -31,6 +31,12 @@ const Files = () => {
       case "xls":
       case "xlsx":
         return "/images/excel-icon.png";
+      case "mp3":
+        return "/images/mp3-icon.png";
+      case "mp4":
+        return "/images/mp4-icon.png";
+      case "zip":
+        return "/images/zip-icon.png";
       default:
         return "/images/file-icon.png";
     }
