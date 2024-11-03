@@ -33,7 +33,7 @@ class UserLoginSerializer(serializers.Serializer):
             username=clean_data["username"], password=clean_data["password"]
         )
         if not user:
-            raise ValidationError("User not found")
+            raise ValidationError("Invalid username or password")
         return user
 
 

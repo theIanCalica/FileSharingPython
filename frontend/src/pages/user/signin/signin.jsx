@@ -35,6 +35,13 @@ const SignIn = () => {
           reset();
           authenticate(response.data);
           navigate("/drive");
+        })
+        .catch((error) => {
+          if (error.response) {
+            const message = error.response.data[0];
+            notifyError(message);
+            console.log(message);
+          }
         });
     } catch (error) {
       notifyError("Sign-in failed. Please check your credentials.");
