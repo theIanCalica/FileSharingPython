@@ -7,6 +7,8 @@ from .validations import *
 from rest_framework.parsers import MultiPartParser, FormParser
 import os
 import cloudinary.uploader
+from cloudinary import api
+from cloudinary.exceptions import NotFound
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 import base64
@@ -51,7 +53,6 @@ def file_upload_view(request):
 
         original_filename, _ = os.path.splitext(file.name)
         file_extension = os.path.splitext(file.name)[1].lower().replace(".", "")
-        print(file_extension)
         upload_options = {
             "folder": cloudinary_folder,
             "resource_type": "auto",
@@ -99,10 +100,33 @@ def file_upload_view(request):
     )
 
 
+def check_resource_exists(public_id):
+    """
+    Check if a resource exists in Cloudinary.
+
+    :param public_id: The public ID of the resource to check.
+    :return: The resource information if found, otherwise None.
+    """
+    try:
+        # Attempt to retrieve the resource information from Cloudinary
+        resource_info = api.resource(public_id)
+        print("Resource found:", resource_info)  # Debugging output
+        return resource_info
+    except NotFound:
+        # If the resource does not exist, print a message and return None
+        print("Resource not found.")
+        return None
+    except Exception as e:
+        # Handle other potential exceptions and log the error
+        print(f"Error checking resource: {str(e)}")
+        return None
+
+
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def file_delete_view(request, pk):
     try:
+        # Fetch the file instance
         file_instance = File.objects.get(pk=pk)
 
         # Check if the user is the owner of the file
@@ -112,7 +136,37 @@ def file_delete_view(request, pk):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        file_instance.delete()  # Delete the file instance
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        # public_id = file_instance.public_id.strip()
+        public_id = "user_1/ek2nv3ftyqf0cpoujz8q"
+        # Check if the resource exists in Cloudinary
+        resource_info = check_resource_exists(public_id)
+        if resource_info is None:
+            return Response(
+                {"detail": "File not found in Cloudinary."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Attempt to delete the resource from Cloudinary
+        try:
+            print(file_instance.public_id)  # Log the public ID
+            response = cloudinary.uploader.destroy(file_instance.public_id)
+            print(f"Cloudinary response: {response}")
+
+            if response.get("result") == "ok":
+                # File deleted successfully from Cloudinary
+                # Now delete the file instance from the database
+                file_instance.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                # Handle error response from Cloudinary
+                return Response(
+                    {"detail": f"Failed to delete file from Cloudinary: {response}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+        except Exception as e:
+            return Response(
+                {"detail": f"Failed to delete file from Cloudinary: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
     except File.DoesNotExist:
         return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
