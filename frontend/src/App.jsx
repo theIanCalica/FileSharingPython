@@ -33,7 +33,7 @@ function App() {
         <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/drive" element={<AuthUserLayout />}>
           <Route index element={<AuthUserPage />}></Route>
-          <Route path="folders" element={<AuthFiles />}></Route>
+          <Route path="files" element={<AuthFiles />}></Route>
           <Route path="profile" element={<AuthProfile />}></Route>
         </Route>
         {/* Routes for admin */}

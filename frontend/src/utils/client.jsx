@@ -11,25 +11,28 @@ const client = axios.create({
 // Function to refresh the access token
 const refreshAccessToken = async () => {
   const { refreshToken } = getToken() || {};
+  console.log(refreshToken);
   if (!refreshToken) {
     throw new Error("No refresh token available.");
   }
+  if (refreshToken) {
+    const cleanedToken = refreshToken.replace(/^["']|["']$/g, "");
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_LINK}/token/refresh/`,
+        {
+          refresh: cleanedToken,
+        }
+      );
 
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_LINK}/auth/refresh`,
-      {
-        refresh_token: refreshToken,
-      }
-    );
-
-    // Save new tokens
-    const { accessToken, refreshToken: newRefreshToken } = response.data; // Adjust based on your API response structure
-    setToken({ accessToken, refreshToken: newRefreshToken }); // Update the token in local storage or your state management
-    return accessToken;
-  } catch (error) {
-    console.error("Failed to refresh token:", error);
-    throw error; // Rethrow error to handle in the request interceptor
+      // Save new tokens
+      const { accessToken, refreshToken: newRefreshToken } = response.data; // Adjust based on your API response structure
+      setToken({ accessToken, refreshToken: newRefreshToken }); // Update the token in local storage or your state management
+      return accessToken;
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
+      throw error; // Rethrow error to handle in the request interceptor
+    }
   }
 };
 
@@ -48,24 +51,31 @@ client.interceptors.request.use(
   }
 );
 
-// Add a response interceptor to handle token expiration
-client.interceptors.request.use(
+client.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Check if the error is due to an expired token
+    // Only attempt token refresh if the error is specifically due to expiration
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+
+      try {
+        // Call the token refresh function
+        const newAccessToken = await refreshAccessToken();
+
+        // Set the new token in headers
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+
+        // Retry the original request with the new token
+        return client(originalRequest);
+      } catch (refreshError) {
+        console.error("Failed to refresh token", refreshError);
+        // Optional: Redirect to login or logout on token refresh failure
+      }
     }
 
-    try {
-      const newAccessToken = await refreshAccessToken();
-      originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-      return client(originalRequest);
-    } catch (refreshError) {
-      console.error("Failed to refresh token", refreshError);
-    }
+    // If the error was not due to token expiration or refresh failed
     return Promise.reject(error);
   }
 );

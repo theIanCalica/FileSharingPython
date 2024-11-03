@@ -13,8 +13,11 @@ import {
   notifyError,
   notifySuccess,
 } from "../../../../utils/Helpers";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 const Sidebar = () => {
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const fileInputRef = useRef(null);
@@ -48,7 +51,7 @@ const Sidebar = () => {
       formData.append("files", files[i]); // Use the same key for multiple files
     }
 
-    // Optionally, you can prevent form submission if you are handling the file upload here
+    // Optionally, prevent form submission if you are handling the file upload here
     event.preventDefault();
 
     uploadFiles(formData); // Call the function to handle upload
@@ -56,18 +59,29 @@ const Sidebar = () => {
 
   // Function to upload files
   const uploadFiles = async (formData) => {
+    setUploading(true); // Set uploading to true
     try {
       const response = await client.post("/upload/", formData, {
+        onUploadProgress: (progressEvent) => {
+          const total = progressEvent.total;
+          const current = progressEvent.loaded;
+          const percentCompleted = Math.floor((current / total) * 100);
+          setProgress(percentCompleted); // Update progress
+        },
         headers: {
           Accept: "application/json",
-          "Content-Type": undefined,
+          "Content-Type": undefined, // or "multipart/form-data" if needed
         },
         withCredentials: true,
       });
+
       notifySuccess("File(s) uploaded successfully!", response.data);
     } catch (error) {
       notifyError("Something went wrong");
       console.error(error.message);
+    } finally {
+      setUploading(false); // Reset uploading state after upload
+      setProgress(0); // Reset progress after upload is complete
     }
   };
 
@@ -138,6 +152,20 @@ const Sidebar = () => {
         />
       </form>
 
+      {/* Upload Progress Bar */}
+      {uploading && (
+        <div style={{ marginBottom: "20px" }}>
+          <ProgressBar
+            completed={progress}
+            height="20px"
+            bgColor={progress < 50 ? "#ffcc00" : "#4caf50"}
+          />
+          <Typography variant="body2" style={{ textAlign: "center" }}>
+            {progress < 50 ? "Encrypting the file..." : "Uploading..."}
+          </Typography>
+        </div>
+      )}
+
       {/* Menu Items */}
       <div style={{ marginBottom: "20px" }}>
         <Button
@@ -170,16 +198,6 @@ const Sidebar = () => {
           }}
         >
           Shared with me
-        </Button>
-        <Button
-          startIcon={<AccessTimeIcon />}
-          style={{
-            justifyContent: "flex-start",
-            width: "100%",
-            color: "black",
-          }}
-        >
-          Recent
         </Button>
         <Button
           startIcon={<DeleteIcon />}
