@@ -7,7 +7,7 @@ const Navbar = () => {
     <nav className="nav">
       <div className="navbar-logo">
         <img src="/images/logo.png" alt="Logo" />
-        <span className="highlight-text">FileGuard</span>{" "}
+        <span className="highlight-text">FileGuard</span>
         {/* Highlighted text */}
       </div>
       <div className="navbar-menu">
@@ -16,10 +16,10 @@ const Navbar = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/about-us">About</Link>
           </li>
           <li>
-            <Link to="/contact">Contact</Link>
+            <Link to="/contact-us">Contact</Link>
           </li>
         </ul>
       </div>
