@@ -4,36 +4,20 @@ import { notifySuccess, notifyError, formatDate } from "../../utils/Helpers";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Menu, MenuItem, IconButton } from "@mui/material";
+import ContactModal from "../../components/Admin/Modal/Contact";
 
 const Contact = () => {
   const [contacts, setContacts] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentContact, setCurrentContact] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
 
-  // Open and close modal
-  const openModal = (contact = null) => {
-    selectedContact(contact);
-    setIsEditing(!!contact); // If a user is passed, set editing to true
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setCurrentContact(null);
-    setIsEditing(false);
-  };
-
-  const fetch_contacts = async () => {
+  const fetchContacts = async () => {
     await client
       .get("/contact-list/")
       .then((response) => {
-        console.log(response.data);
         setContacts(response.data);
       })
-      .catch((error) => {
+      .catch(() => {
         notifyError("Error fetching contacts");
       });
   };
@@ -45,16 +29,18 @@ const Contact = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    // setSelectedUser(null);
+    setSelectedContact(null);
   };
 
   const handleEdit = () => {
-    openModal(selectedContact); // Your function to open the modal
+    // openModal(selectedContact);
     handleMenuClose();
   };
+
   useEffect(() => {
-    fetch_contacts();
+    fetchContacts();
   }, []);
+
   return (
     <>
       <div className="px-3 mt-8">
