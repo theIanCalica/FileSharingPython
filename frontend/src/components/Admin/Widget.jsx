@@ -38,7 +38,7 @@ const Widget = ({ type, count }) => {
         title: "Contacts",
         count: count,
         link: "View all contacts",
-        url: "/admin/contact-list",
+        url: "/admin/contacts",
         icon: (
           <PhoneIcon
             style={{

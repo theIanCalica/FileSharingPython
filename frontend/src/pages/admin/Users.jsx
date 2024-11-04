@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import { notifyError, notifySuccess, formatDate } from "../../utils/Helpers";
