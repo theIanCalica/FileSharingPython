@@ -1,9 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button, Divider, Typography, Menu, MenuItem } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import DescriptionIcon from "@mui/icons-material/Description";
 import PeopleIcon from "@mui/icons-material/People";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import { useNavigate } from "react-router-dom";
 import client from "../../../../utils/client";
@@ -13,70 +12,78 @@ import ProgressBar from "@ramonak/react-progress-bar";
 const Sidebar = () => {
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
+  const [totalSize, setTotalSize] = useState(0); // State to store total file size
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const fileInputRef = useRef(null);
-  const formRef = useRef(null); // Reference for the form
+  const formRef = useRef(null);
 
-  // Handle menu open
+  const fetchTotalSize = async () => {
+    try {
+      const response = await client.post("/get-tot-file-size/");
+      setTotalSize(response.data.total_size); // Set the total size from the response
+    } catch (error) {
+      notifyError("Failed to fetch total upload size");
+      console.error(error.message);
+    }
+  };
+  // Fetch total file size on component mount
+  useEffect(() => {
+    fetchTotalSize();
+  }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  // Handle menu close
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  // Handle option click (upload or new folder)
   const handleMenuOptionClick = (option) => {
     if (option === "Upload File") {
-      fileInputRef.current.click(); // Open file manager
+      fileInputRef.current.click();
     }
     handleClose();
   };
 
-  // Handle file selection
   const handleFileChange = (event) => {
-    const files = event.target.files; // Get the files from the input
-    const formData = new FormData(formRef.current); // Create a FormData object from the form
+    const files = event.target.files;
+    const formData = new FormData(formRef.current);
 
-    // Append each selected file to the FormData object
     for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]); // Use the same key for multiple files
+      formData.append("files", files[i]);
     }
 
-    // Optionally, prevent form submission if you are handling the file upload here
     event.preventDefault();
-
-    uploadFiles(formData); // Call the function to handle upload
+    uploadFiles(formData);
   };
 
-  // Function to upload files
   const uploadFiles = async (formData) => {
-    setUploading(true); // Set uploading to true
+    setUploading(true);
     try {
       const response = await client.post("/upload/", formData, {
         onUploadProgress: (progressEvent) => {
           const total = progressEvent.total;
           const current = progressEvent.loaded;
           const percentCompleted = Math.floor((current / total) * 100);
-          setProgress(percentCompleted); // Update progress
+          setProgress(percentCompleted);
         },
         headers: {
           Accept: "application/json",
-          "Content-Type": undefined, // or "multipart/form-data" if needed
+          "Content-Type": undefined,
         },
         withCredentials: true,
       });
 
       notifySuccess("File(s) uploaded successfully!", response.data);
+      fetchTotalSize(); // Refresh total size after upload
     } catch (error) {
       notifyError("Something went wrong");
       console.error(error.message);
     } finally {
-      setUploading(false); // Reset uploading state after upload
-      setProgress(0); // Reset progress after upload is complete
+      setUploading(false);
+      setProgress(0);
     }
   };
 
@@ -86,7 +93,6 @@ const Sidebar = () => {
 
   return (
     <div style={{ width: "250px", padding: "10px" }}>
-      {/* Logo */}
       <div
         className="flex-col mt-10"
         style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
@@ -97,7 +103,6 @@ const Sidebar = () => {
         </h5>
       </div>
 
-      {/* New Button with Menu */}
       <Button
         variant="contained"
         style={{
@@ -112,32 +117,23 @@ const Sidebar = () => {
         + New
       </Button>
 
-      {/* Menu for New Options */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
       >
         <MenuItem onClick={() => handleMenuOptionClick("Upload File")}>
           Upload File
         </MenuItem>
       </Menu>
 
-      {/* Form for file upload */}
       <form
         ref={formRef}
         onSubmit={(e) => e.preventDefault()}
         encType="multipart/form-data"
       >
-        {/* Invisible file input for file upload */}
         <input
           type="file"
           multiple
@@ -147,7 +143,6 @@ const Sidebar = () => {
         />
       </form>
 
-      {/* Upload Progress Bar */}
       {uploading && (
         <div style={{ marginBottom: "20px" }}>
           <ProgressBar
@@ -161,7 +156,6 @@ const Sidebar = () => {
         </div>
       )}
 
-      {/* Menu Items */}
       <div style={{ marginBottom: "20px" }}>
         <Button
           startIcon={<HomeIcon />}
@@ -194,19 +188,8 @@ const Sidebar = () => {
         >
           Shared with me
         </Button>
-        <Button
-          startIcon={<DeleteIcon />}
-          style={{
-            justifyContent: "flex-start",
-            width: "100%",
-            color: "black",
-          }}
-        >
-          Trash
-        </Button>
       </div>
 
-      {/* Storage Section */}
       <Divider />
       <div style={{ padding: "10px 0" }}>
         <Button
@@ -220,7 +203,7 @@ const Sidebar = () => {
           Storage
         </Button>
         <Typography variant="body2" style={{ color: "gray", padding: "5px 0" }}>
-          6.07 GB of 15 GB used
+          {`${(totalSize / (1024 * 1024)).toFixed(2)} MB of 15 GB used`}
         </Typography>
         <div
           style={{
@@ -231,7 +214,11 @@ const Sidebar = () => {
           }}
         >
           <div
-            style={{ width: "40%", height: "100%", backgroundColor: "#1a73e8" }}
+            style={{
+              width: `${(totalSize / (15 * 1024 * 1024 * 1024)) * 100}%`,
+              height: "100%",
+              backgroundColor: "#1a73e8",
+            }}
           ></div>
         </div>
         <Button

@@ -20,6 +20,7 @@ urlpatterns = [
     path("files/<int:pk>/delete/", file_delete_view, name="file-delete"),
     path("files/", file_list_view, name="file-list"),
     path("files/<int:pk>/decrypt/", decrypt_file, name="decrypt-file"),
+    path("get-tot-file-size/", get_tot_size, name="get-tot-file-size"),
 ]
 
 # Include the router-generated URLs

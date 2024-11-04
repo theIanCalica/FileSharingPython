@@ -126,6 +126,7 @@ const Files = () => {
     try {
       // Show the loading SweetAlert
       let timerInterval;
+      let millisecondsElapsed = 0;
       Swal.fire({
         title: "Deleting...",
         html: "Please wait while the file is being deleted. <b></b> milliseconds left.",
@@ -134,7 +135,8 @@ const Files = () => {
           Swal.showLoading();
           const timer = Swal.getPopup().querySelector("b");
           timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
+            millisecondsElapsed += 100; // Increment every 100 ms
+            timer.textContent = `${millisecondsElapsed}`;
           }, 100);
         },
         willClose: () => {

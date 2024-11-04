@@ -25,6 +25,7 @@ class FileSerializer(serializers.ModelSerializer):
             "ciphertext",
             "tag",
             "file_type",
+            "file_size",
         ]
 
     def validate_file_url(self, value):

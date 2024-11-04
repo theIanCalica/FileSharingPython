@@ -15,6 +15,7 @@ class File(models.Model):
     nonce = models.TextField()  # Store the encoded nonce
     ciphertext = models.TextField()  # Store the encoded ciphertext
     tag = models.TextField()
+    file_size = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return self.file_name

@@ -15,6 +15,19 @@ import base64
 from django.http import FileResponse
 import io
 import mimetypes
+from django.db.models import Sum
+
+
+# Get the total file size upload the user has
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def get_tot_size(request):
+    user = request.user
+    total_size = (
+        File.objects.filter(user=user).aggregate(Sum("file_size"))["file_size__sum"]
+        or 0
+    )
+    return Response({"total_size": total_size})
 
 
 # Encryption function for AES
@@ -26,6 +39,7 @@ def encrypt_file(file_data):
     return key, nonce, ciphertext, tag
 
 
+# Decryption function for AES
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def decrypt_file(request, pk):
@@ -114,6 +128,9 @@ def file_upload_view(request):
             encoded_ciphertext = base64.b64encode(ciphertext).decode()
             encoded_tag = base64.b64encode(tag).decode()
 
+            # Get file size
+            file_size = file.size  # in bytes
+
             # Prepare data for serializer
             serializer_data = {
                 "file_name": original_filename,
@@ -125,6 +142,7 @@ def file_upload_view(request):
                 "ciphertext": encoded_ciphertext,
                 "tag": encoded_tag,
                 "file_type": file_extension,
+                "file_size": file_size,
             }
 
             # Create serializer
