@@ -21,6 +21,10 @@ urlpatterns = [
     path("files/", file_list_view, name="file-list"),
     path("files/<int:pk>/decrypt/", decrypt_file, name="decrypt-file"),
     path("get-tot-file-size/", get_tot_size, name="get-tot-file-size"),
+    # urls for contact create, read, and update
+    path("contact/", create_contact, name="create-contact"),
+    path("contact-list/", contact_list, name="contact-list"),
+    path("contact/<int:pk>/update", update_contact, name="update-contact"),
 ]
 
 # Include the router-generated URLs

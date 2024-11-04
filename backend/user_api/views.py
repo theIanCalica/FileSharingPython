@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
@@ -178,3 +178,43 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(
                 {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
             )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def create_contact(request):
+    data = request.data
+    serializer = ContactSerializer(data=data)
+    if serializer.is_valid(raise_exception=True):
+        contact = serializer.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def contact_list(request):
+    contacts = Contact.objects.all()
+    serializer = ContactSerializer(contacts, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAdminUser])
+def update_contact(request, pk):
+    try:
+        contact = Contact.objects.get(pk=pk)
+    except Contact.DoesNotExist:
+        return Response(
+            {"detail": "Contact not found."}, status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = ContactSerializer(contact, data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+        )  # Change status to HTTP_200_OK
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

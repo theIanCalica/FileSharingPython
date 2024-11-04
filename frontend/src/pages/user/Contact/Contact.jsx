@@ -1,8 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import "./Contact.scss";
-
+import client from "../../../utils/client";
+import { notifyError, notifySuccess } from "../../../utils/Helpers";
 const Contact = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    await client
+      .post("/contact/", data)
+      .then((response) => {
+        notifySuccess("Sent Successfully");
+      })
+      .catch((error) => {
+        notifyError("Something went wrong, please try again");
+      });
+  };
+
   return (
     <div className="contact-page mt-10">
       <div className="banner">
@@ -65,25 +84,59 @@ const Contact = () => {
           make your experience as smooth as possible. We look forward to hearing
           from you!
         </p>
-        <div className="input-group">
-          <input type="text" placeholder="Your name*" className="input-field" />
-          <input
-            type="email"
-            placeholder="Your E-mail*"
-            className="input-field"
-          />
-        </div>
-        <textarea
-          placeholder="Your message*"
-          className="textarea-field"
-        ></textarea>
-        <div className="checkbox-group">
-          <input type="checkbox" id="consent" />
-          <label htmlFor="consent">
-            I agree that my submitted data is being collected and stored.
-          </label>
-        </div>
-        <button className="submit-button">Send message</button>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="input-group">
+            <input
+              type="text"
+              placeholder="Your name*"
+              className="input-field"
+              {...register("name", { required: "Name is required" })}
+            />
+            {errors.name && <p className="error">{errors.name.message}</p>}
+
+            <input
+              type="email"
+              placeholder="Your E-mail*"
+              className="input-field"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "Enter a valid email",
+                },
+              })}
+            />
+            {errors.email && <p className="error">{errors.email.message}</p>}
+          </div>
+
+          <textarea
+            placeholder="Your message*"
+            className="textarea-field"
+            {...register("message", { required: "Message is required" })}
+          ></textarea>
+          {errors.message && <p className="error">{errors.message.message}</p>}
+
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="consent"
+              {...register("consent", {
+                required: "You must agree to data collection",
+              })}
+            />
+            <label htmlFor="consent">
+              I agree that my submitted data is being collected and stored.
+            </label>
+            {errors.consent && (
+              <p className="error">{errors.consent.message}</p>
+            )}
+          </div>
+
+          <button type="submit" className="submit-button">
+            Send message
+          </button>
+        </form>
       </div>
 
       {/* Google Maps Section */}
@@ -92,7 +145,7 @@ const Contact = () => {
           title="Google Map"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30899.361259474914!2d121.01864680179158!3d14.517943197024417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397cf2ca2a215d5%3A0x38380d2c1d509c80!2sWestern%20Bicutan%2C%20Taguig%2C%201630%20Metro%20Manila!5e0!3m2!1sen!2sph!4v1730702443363!5m2!1sen!2sph"
           width="100%"
-          height="400" // Adjust height as needed
+          height="400"
           style={{ border: 0 }}
           allowFullScreen=""
           loading="lazy"
