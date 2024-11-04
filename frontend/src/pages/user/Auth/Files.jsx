@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import client from "../../../utils/client";
 import { formatDate, notifyError, notifySuccess } from "../../../utils/Helpers";
 import Swal from "sweetalert2";
@@ -7,6 +7,10 @@ const Files = () => {
   const [files, setFiles] = useState([]);
   const [decryptedFiles, setDecryptedFiles] = useState({});
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const formRef = useRef(null);
+  const [progress, setProgress] = useState(0);
 
   const fetchFiles = async () => {
     try {
@@ -14,6 +18,45 @@ const Files = () => {
       setFiles(response.data);
     } catch (error) {
       console.error("Error fetching files:", error);
+    }
+  };
+
+  const handleFileChange = (event) => {
+    const files = event.target.files;
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+
+    uploadFiles(formData);
+  };
+
+  const uploadFiles = async (formData) => {
+    setUploading(true);
+    try {
+      const response = await client.post("/upload/", formData, {
+        onUploadProgress: (progressEvent) => {
+          const total = progressEvent.total;
+          const current = progressEvent.loaded;
+          const percentCompleted = Math.floor((current / total) * 100);
+          setProgress(percentCompleted);
+        },
+        headers: {
+          Accept: "application/json",
+          "Content-Type": undefined,
+        },
+        withCredentials: true,
+      });
+
+      notifySuccess("File(s) uploaded successfully!", response.data);
+      fetchFiles(); // Refresh files list after upload
+    } catch (error) {
+      notifyError("Something went wrong");
+      console.error(error.message);
+    } finally {
+      setUploading(false);
+      setProgress(0);
     }
   };
 
@@ -179,63 +222,110 @@ const Files = () => {
   }, []);
 
   return (
-    <div>
-      <h2 className="font-sans font-bold text-2xl">My Files</h2>
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">File Icon</th>
-            <th className="border px-4 py-2">File Name</th>
-            <th className="border px-4 py-2">Upload Date</th>
-            <th className="border px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map((file) => (
-            <tr key={file.id} className="text-center">
-              <td className="border px-4 py-2 flex justify-center items-center">
-                <img
-                  src={getFileTypeIcon(file.file_type)}
-                  alt="file icon"
-                  style={{ width: 70, height: 70 }}
-                />
-              </td>
-              <td className="border px-4 py-2">{file.file_name}</td>
-              <td className="border px-4 py-2">
-                {formatDate(file.upload_date)}
-              </td>
-              <td className="border px-4 py-2 relative">
-                <button
-                  onClick={() => toggleDropdown(file.id)}
-                  className="text-gray-800 font-bold py-1 px-2 rounded-full"
-                >
-                  <i className="fi fi-br-menu-dots-vertical"></i>
-                </button>
-                {activeDropdown === file.id && (
-                  <div
-                    key={`dropdown-${file.id}`} // Add unique key for the dropdown
-                    className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10"
-                    style={{ position: "absolute" }}
-                  >
-                    <button
-                      onClick={() => handleDecrypt(file.id)}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      Decrypt and Download
-                    </button>
-                    <button
-                      onClick={() => handleDelete(file.id)}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
-              </td>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h2 className="font-sans font-bold text-3xl mb-6 text-gray-700">
+        My Files
+      </h2>
+      <button
+        className="border border-blue-500 mb-6 text-blue-500 hover:bg-blue-500 hover:text-white font-bold py-2 px-6 rounded transition duration-300"
+        onClick={() => document.getElementById("file-upload").click()}
+      >
+        Upload File
+      </button>
+      <input
+        id="file-upload"
+        type="file"
+        multiple
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
+      <div className="">
+        <table className="min-w-full bg-white shadow-lg rounded-lg">
+          <thead>
+            <tr className="bg-blue-500 text-white text-lg">
+              <th className="py-3 px-6 font-semibold text-left rounded-tl-lg">
+                File Icon
+              </th>
+              <th className="py-3 px-6 font-semibold text-left">File Name</th>
+              <th className="py-3 px-6 font-semibold text-left">Upload Date</th>
+              <th className="py-3 px-6 font-semibold text-left rounded-tr-lg">
+                Actions
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {files.map((file, index) => (
+              <tr
+                key={file.id}
+                className={`border-b transition duration-200 ${
+                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                } hover:bg-gray-100`}
+              >
+                <td className="py-4 px-6 flex justify-center items-center">
+                  <img
+                    src={getFileTypeIcon(file.file_type)}
+                    alt="file icon"
+                    className="w-12 h-12"
+                  />
+                </td>
+                <td className="py-4 px-6 text-gray-700">{file.file_name}</td>
+                <td className="py-4 px-6 text-gray-700">
+                  {formatDate(file.upload_date)}
+                </td>
+                <td className="py-4 px-6 text-gray-700">
+                  <div className="relative">
+                    <button
+                      onClick={() => toggleDropdown(file.id)}
+                      className="border border-gray-300 rounded-full p-2 focus:outline-none hover:bg-gray-200 transition duration-200"
+                    >
+                      &#8942;
+                    </button>
+                    {activeDropdown === file.id && (
+                      <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                        <button
+                          onClick={() => handleDecrypt(file.id)}
+                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition duration-200"
+                        >
+                          Decrypt
+                        </button>
+                        <button
+                          onClick={() => handleDelete(file.id)}
+                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition duration-200"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {uploading && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+          <div className="bg-white p-8 w-96 rounded-lg shadow-lg">
+            {" "}
+            {/* Increased padding and width */}
+            <h3 className="text-2xl font-semibold mb-4 text-center">
+              Uploading...
+            </h3>{" "}
+            {/* Larger font */}
+            <div className="relative pt-1">
+              <div className="overflow-hidden h-4 text-xs flex rounded bg-blue-200">
+                <div
+                  style={{ width: `${progress}%` }}
+                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500 transition-all duration-300"
+                ></div>
+              </div>
+              <p className="text-center text-lg mt-4 text-gray-600">
+                {progress}%
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

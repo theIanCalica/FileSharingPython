@@ -221,18 +221,6 @@ const Sidebar = () => {
             }}
           ></div>
         </div>
-        <Button
-          variant="outlined"
-          style={{
-            marginTop: "10px",
-            textTransform: "none",
-            width: "100%",
-            color: "#1a73e8",
-            borderColor: "#1a73e8",
-          }}
-        >
-          Get more storage
-        </Button>
       </div>
     </div>
   );
