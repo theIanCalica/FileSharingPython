@@ -31,10 +31,17 @@ const SignIn = () => {
           },
         })
         .then((response) => {
+          const data = response.data;
+          const user = data.user;
           notifySuccess("Sign-in successful!");
           reset();
           authenticate(response.data);
-          navigate("/drive");
+
+          if (user.is_superuser) {
+            navigate("/admin");
+          } else {
+            navigate("/drive");
+          }
         })
         .catch((error) => {
           if (error.response) {

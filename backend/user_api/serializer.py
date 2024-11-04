@@ -63,7 +63,8 @@ class UserObjSerializer(serializers.ModelSerializer):
             "is_active",
             "date_joined",
             "last_login",
-        ]  # List all fields except 'password'
+            "is_superuser",
+        ]
 
 
 # For user CRUD

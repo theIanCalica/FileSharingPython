@@ -22,6 +22,7 @@ import SignIn from "./pages/user/signin/signin";
 import SignUp from "./pages/user/signup/signup";
 import EmailAdmin from "./pages/admin/Email";
 import ProfileAdmin from "./pages/admin/Profile";
+import ContactAdminPages from "./pages/admin/Contact";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="users" element={<UsersPage />}></Route>
           <Route path="email" element={<EmailAdmin />}></Route>
           <Route path="profile" element={<ProfileAdmin />}></Route>
+          <Route path="contacts" element={<ContactAdminPages />}></Route>
         </Route>
       </Routes>
       <ToastContainer />

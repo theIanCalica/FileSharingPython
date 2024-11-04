@@ -7,7 +7,6 @@ import PieChart from "../../components/Admin/Chart/PieChart";
 import Map from "../../components/Admin/Map";
 import { notifySuccess, notifyError } from "../../utils/Helpers";
 import { ToastContainer } from "react-toastify";
-import axios from "axios";
 import client from "../../utils/client";
 
 const Home = () => {
