@@ -78,11 +78,18 @@ const SignUp = () => {
     }
   };
 
+  const handleGoHome = () => {
+    navigate("/");
+  };
+
   return (
     <div className="signup-container">
       {/* Left side - Sign Up Form */}
       <div className="signup-form">
-        <div className="flex flex-col justify-center items-center">
+        <div
+          className="flex flex-col justify-center items-center cursor-pointer"
+          onClick={handleGoHome}
+        >
           <img
             src="/images/logo.png"
             alt="Your Logo"

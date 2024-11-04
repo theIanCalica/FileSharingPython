@@ -285,3 +285,157 @@
     }
   }
 }
+
+.floating-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+
+  .background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6); // Darkens the background for better contrast
+  }
+
+  .floating-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.5); // Slightly less transparent
+    padding: 3rem 4rem;
+    border-radius: 12px;
+    max-width: 80%;
+  }
+
+  .floating-text-1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 2rem;
+  }
+
+  .floating-text-2 h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0.8rem 0;
+    color: #111;
+    line-height: 1.2;
+  }
+
+  .floating-text-3 p {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: #333;
+    margin-top: 2rem;
+    max-width: 700px; // Ensures readability with limited line length
+  }
+}
+
+.features-container {
+  padding: 40px;
+  background-color: #f7f7f7; // Light background for contrast
+
+  .features-title {
+    text-align: center;
+    h1 {
+      font-size: 2.5rem;
+      color: #333; // Dark color for title
+      margin-bottom: 10px;
+    }
+  }
+
+  .features-description {
+    text-align: center;
+    p {
+      font-size: 1.2rem;
+      color: #666; // Lighter text color for description
+      max-width: 800px;
+      margin: 0 auto 30px; // Centered with margin
+    }
+  }
+
+  .features-icons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+
+    .icon-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .icon-circle {
+        width: 80px; // Size of the circle
+        height: 80px; // Size of the circle
+        border-radius: 50%;
+        background-color: #fff; // White background for icons
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); // Subtle shadow
+        margin-bottom: 10px;
+
+        img {
+          max-width: 60%; // Limit the icon size
+          max-height: 60%; // Limit the icon size
+        }
+      }
+      
+      p {
+        text-align: center;
+        color: #444; // Darker text for icon captions
+        font-weight: bold;
+      }
+    }
+  }
+
+  .features-captions {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+
+    .caption-container {
+      width: 20%; // Each caption takes equal width
+      text-align: center;
+
+      p {
+        color: #777; // Lighter text color for captions
+      }
+    }
+  }
+
+  .features-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .steps-wrapper {
+      display: flex; // Flex to align step numbers and arrows
+      align-items: center;
+
+      .step-circle {
+        width: 40px; // Size of the step circle
+        height: 40px; // Size of the step circle
+        border-radius: 50%;
+        background-color: #4285F4; // Example accent color
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        margin: 0 10px; // Spacing between circles
+      }
+
+      .arrow {
+        color: #444; // Color for the arrow
+        font-size: 1.5rem; // Adjust arrow size
+      }
+    }
+  }
+}

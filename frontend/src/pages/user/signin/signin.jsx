@@ -54,29 +54,23 @@ const SignIn = () => {
     console.error(errors);
   };
 
+  const handleGoHome = () => {
+    navigate("/");
+  };
+
   return (
     <div className="signin-container">
       <div className="signin-form">
-        <div className="logo">
+        <div
+          className="logo flex justify-center items-center flex-col cursor-pointer"
+          onClick={handleGoHome}
+        >
           <img
             src="/images/logo.png"
             alt="Your Logo"
             style={{ width: "150px", height: "auto" }}
           />
           <p>FileGuard</p>
-        </div>
-
-        <div className="social-buttons">
-          <button className="google-btn">
-            <img src="/images/google-logo.png" alt="Google" /> Google
-          </button>
-          <button className="facebook-btn">
-            <img src="/images/facebook-logo.png" alt="Facebook" /> Facebook
-          </button>
-        </div>
-
-        <div className="divider">
-          <span>Or</span>
         </div>
 
         <form onSubmit={handleSubmit(onValid, onInvalid)}>

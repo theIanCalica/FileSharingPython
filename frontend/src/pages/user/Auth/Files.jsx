@@ -1,15 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import client from "../../../utils/client";
 import { formatDate, notifyError, notifySuccess } from "../../../utils/Helpers";
 import Swal from "sweetalert2";
 
 const Files = () => {
   const [files, setFiles] = useState([]);
-  const [decryptedFiles, setDecryptedFiles] = useState({});
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  const formRef = useRef(null);
   const [progress, setProgress] = useState(0);
 
   const fetchFiles = async () => {

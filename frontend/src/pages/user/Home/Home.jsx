@@ -1,11 +1,10 @@
-// src/pages/user/HomeAbout.jsx
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
-import "./Home.scss"; // Import your combined stylesheet
+import "./Home.scss";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -182,9 +181,114 @@ const Home = () => {
 
         {/* Fifth Div */}
         <div className="benefits-signup">
-          <button className="signup-button" onClick={handleSignUpClick}>
-            Free Sign Up
-          </button>
+          <button className="signup-button">Free Sign Up</button>
+        </div>
+      </div>
+      {/* New Floating Section */}
+      <div className="floating-section">
+        <img
+          src="/images/background-large.jpg"
+          alt="Handle all your file needs"
+          className="background-image"
+        />
+        <div className="floating-content">
+          <div className="floating-text-1">Handles all of your file needs</div>
+          <div className="floating-text-2">
+            <h1>No matter where you go –</h1>
+            <h1>take your files with you</h1>
+          </div>
+          <div className="floating-text-3">
+            <p>
+              Whether it’s your music collection, home videos, your resume, or
+              your important work docs, have them in your pocket whenever you
+              need them.
+            </p>
+          </div>
+        </div>
+      </div>
+      {/* New Section */}
+      <div className="features-container">
+        {/* Div 1 */}
+        <div className="features-title">
+          <h1>Powerful and Simple</h1>
+        </div>
+
+        {/* Div 2 */}
+        <div className="features-description">
+          <p>
+            File storage made easy – including powerful features you won’t find
+            anywhere else. Whether you’re sharing photos, videos, audio, or
+            docs, MediaFire can simplify your workflow.
+          </p>
+        </div>
+
+        {/* Div 3 - Icons */}
+        <div className="features-icons">
+          <div className="icon-container">
+            <div className="icon-circle">
+              <img src="/images/step-1.jpg" alt="Share" />
+            </div>
+            <p>Share</p>
+          </div>
+          <div className="icon-container">
+            <div className="icon-circle">
+              <img src="/images/step-2.jpg" alt="Collaborate" />
+            </div>
+            <p>Collaborate</p>
+          </div>
+          <div className="icon-container">
+            <div className="icon-circle">
+              <img src="/images/step-3.jpg" alt="Store" />
+            </div>
+            <p>Store</p>
+          </div>
+          <div className="icon-container">
+            <div className="icon-circle">
+              <img src="/images/step-4.jpg" alt="Access" />
+            </div>
+            <p>Access</p>
+          </div>
+        </div>
+
+        {/* Div 4 - Captions */}
+        <div className="features-captions">
+          <div className="caption-container">
+            <p>
+              Share through email, link, or social network. Unlimited downloads.
+              No wait times.
+            </p>
+          </div>
+          <div className="caption-container">
+            <p>
+              Store and share any file type. Share folders of project files.
+              Easily email large files.
+            </p>
+          </div>
+          <div className="caption-container">
+            <p>
+              10GB for free. Up to 50GB free with bonuses. Store all your
+              photos, audio, and videos.
+            </p>
+          </div>
+          <div className="caption-container">
+            <p>
+              Always have your important files with you. Never forget your work
+              at home.
+            </p>
+          </div>
+        </div>
+
+        {/* Div 5 - Steps */}
+        <div className="features-steps">
+          <div className="steps-wrapper">
+            <div className="step-circle">1</div>
+            <div className="arrow">→</div>
+            <div className="step-circle">2</div>
+            <div className="arrow">→</div>
+            <div className="step-circle">3</div>
+            <div className="arrow">→</div>
+            <div className="step-circle">4</div>
+          </div>
         </div>
       </div>
     </div>

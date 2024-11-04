@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 // Pages for the home pages and layout
 import Homepage from "./pages/user/Home/Home";
 import HomeLayout from "./components/User/layout";
+import ContactPage from "./pages/user/Contact/Contact";
 
 // Pages for authenticated user
 import AuthUserPage from "./pages/user/Auth/index";
@@ -28,6 +29,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeLayout />}>
           <Route index element={<Homepage />}></Route>
+          <Route path="/contact-us" element={<ContactPage />}></Route>
         </Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>
