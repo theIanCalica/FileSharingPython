@@ -25,6 +25,8 @@ urlpatterns = [
     path("contact/", create_contact, name="create-contact"),
     path("contact-list/", contact_list, name="contact-list"),
     path("contact/<int:pk>/update", update_contact, name="update-contact"),
+    path("contact-count/", get_contact_count, name="contact-count"),
+    path("deactivated-count/", get_deactivated_count, name="deactivated-count"),
 ]
 
 # Include the router-generated URLs

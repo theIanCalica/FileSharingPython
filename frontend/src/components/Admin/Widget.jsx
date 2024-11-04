@@ -1,20 +1,23 @@
 import React from "react";
-import { KeyboardArrowUp as KeyboardArrowUpIcon } from "@mui/icons-material";
 import { PersonOutlineOutlined as PersonOutlineOutlinedIcon } from "@mui/icons-material";
-import { ShoppingCartOutlined as ShoppingCartOutlinedIcon } from "@mui/icons-material";
 import { MonetizationOnOutlined as MonetizationOnOutlinedIcon } from "@mui/icons-material";
-import { ConfirmationNumberOutlined as ConfirmationNumberOutlinedIcon } from "@mui/icons-material";
-
+import PersonOffIcon from "@mui/icons-material/PersonOff";
+import PhoneIcon from "@mui/icons-material/Phone";
+import { useNavigate } from "react-router-dom";
 const Widget = ({ type, count }) => {
   let data;
-  const diff = 20;
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    navigate(data.url);
+  };
 
   switch (type) {
     case "User":
       data = {
         title: "USERS",
-        isMoney: false,
         count: count,
+        url: "/admin/users",
         link: "See all users",
         icon: (
           <PersonOutlineOutlinedIcon
@@ -30,14 +33,14 @@ const Widget = ({ type, count }) => {
         ),
       };
       break;
-    case "Order":
+    case "Contact":
       data = {
-        title: "ORDERS",
-        isMoney: false,
+        title: "Contacts",
         count: count,
-        link: "View all orders",
+        link: "View all contacts",
+        url: "/admin/contact-list",
         icon: (
-          <ShoppingCartOutlinedIcon
+          <PhoneIcon
             style={{
               width: "4rem",
               height: "4rem",
@@ -50,14 +53,14 @@ const Widget = ({ type, count }) => {
         ),
       };
       break;
-    case "Booking":
+    case "Deactivated":
       data = {
-        title: "BOOKINGS",
-        isMoney: false,
+        title: "Deactivated",
         count: count,
-        link: "View all bookings",
+        url: "/admin/user-deactivated/",
+        link: "View all deactivated users",
         icon: (
-          <ConfirmationNumberOutlinedIcon
+          <PersonOffIcon
             style={{
               width: "4rem",
               height: "4rem",
@@ -100,19 +103,14 @@ const Widget = ({ type, count }) => {
         <span className="text-4xl font-medium">
           {data.isMoney && "₱"} {count}
         </span>
-        <span className="text-sm border-b border-gray-400 w-max cursor-pointer">
+        <span
+          className="text-sm border-b border-gray-400 w-max cursor-pointer"
+          onClick={handleNavigation}
+        >
           {data.link}
         </span>
       </div>
-      <div className="flex flex-col justify-between items-end">
-        <div
-          className={`flex items-center text-lg ${
-            diff > 0 ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          <KeyboardArrowUpIcon className="text-3xl" />
-          {diff} %
-        </div>
+      <div className="flex flex-col justify-between items-end py-6">
         {data.icon}
       </div>
     </div>

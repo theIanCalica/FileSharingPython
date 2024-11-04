@@ -15,10 +15,24 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 @api_view(["GET"])
-@permission_classes([AllowAny])
+@permission_classes([IsAdminUser])
 def get_user_count(request):
     user_count = User.objects.count()
-    return JsonResponse({"user_count": user_count})
+    return JsonResponse({"user_count": user_count}, status=200)
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def get_contact_count(request):
+    contact_count = Contact.objects.count()
+    return JsonResponse({"contact_count": contact_count}, status=200)
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def get_deactivated_count(request):
+    deactivated_count = User.objects.filter(is_active=False).count()
+    return JsonResponse({"deactivated_count": deactivated_count}, status=200)
 
 
 class UserRegister(APIView):
