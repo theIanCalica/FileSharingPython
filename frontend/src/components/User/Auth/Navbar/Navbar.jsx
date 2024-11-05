@@ -6,14 +6,12 @@ import {
   notifyError,
   notifySuccess,
   logout,
-  getUser,
   getProfile,
 } from "../../../../utils/Helpers";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Navbar = () => {
-  const user = getUser();
   const profile = getProfile();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);

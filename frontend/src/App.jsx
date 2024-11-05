@@ -8,6 +8,7 @@ import Homepage from "./pages/user/Home/Home";
 import HomeLayout from "./components/User/layout";
 import ContactPage from "./pages/user/Contact/Contact";
 import AboutPage from "./pages/user/About/About";
+import ResetPasswordPage from "./pages/user/ResetPassword";
 
 // Pages for authenticated user
 import AuthUserPage from "./pages/user/Auth/index";
@@ -25,6 +26,7 @@ import SignUp from "./pages/user/signup/signup";
 import EmailAdmin from "./pages/admin/Email";
 import ProfileAdmin from "./pages/admin/Profile";
 import ContactAdminPages from "./pages/admin/Contact";
+import NewPassword from "./pages/user/NewPassword";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
           <Route path="about-us" element={<AboutPage />}></Route>
           <Route path="/contact-us" element={<ContactPage />}></Route>
         </Route>
+        <Route path="/reset-password" element={<ResetPasswordPage />}></Route>
+        <Route path="/change-password/:id" element={<NewPassword />}></Route>
         <Route path="/signin" element={<SignIn />}></Route>
         <Route path="/signup" element={<SignUp />}></Route>
         <Route path="/drive" element={<AuthUserLayout />}>

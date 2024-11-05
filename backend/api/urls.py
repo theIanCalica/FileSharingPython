@@ -37,6 +37,10 @@ urlpatterns = [
     path(
         "files/link-share/", create_link_share, name="create_link_share"
     ),  # Create link share
+    path(
+        "reset-password-request", reset_password_request, name="reset-password-request"
+    ),
+    path("reset-password/", reset_password, name="reset-password"),
 ]
 
 # Include the router-generated URLs

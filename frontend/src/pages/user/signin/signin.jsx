@@ -65,6 +65,10 @@ const SignIn = () => {
     navigate("/");
   };
 
+  const handleResetPasswordBtn = () => {
+    navigate("/reset-password");
+  };
+
   return (
     <div className="signin-container">
       <div className="signin-form">
@@ -119,7 +123,12 @@ const SignIn = () => {
             <label>
               <input type="checkbox" /> Remember me
             </label>
-            <Link to={"/s"}>Reset Password</Link>
+            <Link
+              to="/reset-password"
+              className="cursor-pointer hover:underline"
+            >
+              Reset Password
+            </Link>
           </div>
 
           <button type="submit" className="signin-button">

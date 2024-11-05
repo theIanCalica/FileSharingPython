@@ -13,6 +13,66 @@ from .validations import *
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.db import transaction
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.conf import settings
+from datetime import datetime, timedelta
+import jwt
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password_request(request):
+    email = request.data.get("email")
+
+    # Attempt to find the user by email
+    try:
+        user = User.objects.get(email=email)
+
+        # Generate a JWT token
+        payload = {
+            "user_id": user.id,
+            "exp": datetime.utcnow() + timedelta(hours=1),  # Set expiration to 1 hour
+        }
+        reset_token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+
+        # Send password reset email
+        send_mail(
+            "Password Reset Request",
+            f"Use this link to reset your password: http://localhost:3000/change-password/{reset_token}/",
+            settings.EMAIL_HOST_USER,  # Use the configured email from settings
+            [email],  # The recipient's email
+            fail_silently=False,
+        )
+
+    except User.DoesNotExist:
+        # Do nothing, simply respond as if it succeeded
+        pass
+
+    # Always return a success response
+    return Response(
+        {"message": "If this email is registered, a reset link has been sent."},
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password(request):
+    user_id = request.data.get("user_id")
+    new_password = request.data.get("password")
+
+    try:
+        user = User.objects.get(id=user_id)
+        user.set_password(new_password)  # Set the new password
+        user.save()  # Save the user
+        return Response(
+            {"message": "Password changed successfully."}, status=status.HTTP_200_OK
+        )
+    except User.DoesNotExist:
+        return Response(
+            {"message": "User not found."}, status=status.HTTP_404_NOT_FOUND
+        )
 
 
 @api_view(["GET"])
@@ -49,7 +109,7 @@ class UserRegister(APIView):
                 user = serializer.create(clean_data)
 
                 # Create a UserProfile instance for the newly created user
-                UserProfile.objects.create(user=user)
+                profile = UserProfile.objects.create(user=user)
 
                 # Generate tokens for the new user
                 refresh = RefreshToken.for_user(user)
@@ -58,12 +118,13 @@ class UserRegister(APIView):
 
                 # Serialize user data for the response
                 user_data = UserObjSerializer(user).data
-
+                profile_data = UserProfileSerializer(profile).data
                 return Response(
                     {
                         "user": user_data,
                         "access": access_token,
                         "refresh": refresh_token,
+                        "profile": profile_data,
                     },
                     status=status.HTTP_201_CREATED,
                 )
