@@ -101,3 +101,9 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = "__all__"
         read_only_fields = ["created_at"]
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ["public_id", "url"]

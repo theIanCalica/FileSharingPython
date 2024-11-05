@@ -12,6 +12,7 @@ from rest_framework.authentication import SessionAuthentication
 from .validations import *
 from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.db import transaction
 
 
 @api_view(["GET"])
@@ -41,13 +42,23 @@ class UserRegister(APIView):
     def post(self, request):
         clean_data = register_validation(request.data)
         serializer = UserRegisterSerializer(data=clean_data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.create(clean_data)
-            if user:
+
+        # Begin an atomic transaction to handle both user and profile creation
+        with transaction.atomic():
+            if serializer.is_valid(raise_exception=True):
+                user = serializer.create(clean_data)
+
+                # Create a UserProfile instance for the newly created user
+                UserProfile.objects.create(user=user)
+
+                # Generate tokens for the new user
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
                 refresh_token = str(refresh)
+
+                # Serialize user data for the response
                 user_data = UserObjSerializer(user).data
+
                 return Response(
                     {
                         "user": user_data,
@@ -56,6 +67,7 @@ class UserRegister(APIView):
                     },
                     status=status.HTTP_201_CREATED,
                 )
+
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -126,9 +138,12 @@ class UserLogin(APIView):
             login(request, user)
             refresh = RefreshToken.for_user(user)
             user_data = UserObjSerializer(user).data
+            user_profile = UserProfile.objects.get(user=user)
+            profile_data = UserProfileSerializer(user_profile).data
             return Response(
                 {
                     "user": user_data,
+                    "profile": profile_data,
                     "access": str(refresh.access_token),
                     "refresh": str(refresh),
                 },

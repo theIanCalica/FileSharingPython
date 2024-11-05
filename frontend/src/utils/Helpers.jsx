@@ -5,6 +5,7 @@ export const authenticate = (data) => {
     localStorage.setItem("access_token", JSON.stringify(data.access));
     localStorage.setItem("refresh_token", JSON.stringify(data.refresh));
     localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("profile", JSON.stringify(data.profile));
   }
 };
 
@@ -42,11 +43,22 @@ export const getUser = () => {
   }
 };
 
+export const getProfile = () => {
+  if (typeof window !== "undefined") {
+    if (localStorage.getItem("profile")) {
+      return JSON.parse(localStorage.getItem("profile"));
+    } else {
+      return false;
+    }
+  }
+};
+
 export const logout = () => {
   if (window !== "undefined") {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
+    localStorage.removeItem("profile");
   }
 };
 

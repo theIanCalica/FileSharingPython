@@ -2,10 +2,19 @@ import React, { useState } from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import client from "../../../../utils/client";
-import { notifyError, notifySuccess, logout } from "../../../../utils/Helpers";
+import {
+  notifyError,
+  notifySuccess,
+  logout,
+  getUser,
+  getProfile,
+} from "../../../../utils/Helpers";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+
 const Navbar = () => {
+  const user = getUser();
+  const profile = getProfile();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -89,7 +98,7 @@ const Navbar = () => {
           <HelpOutlineIcon style={{ color: "gray", cursor: "pointer" }} />
           <div className="mr-5" style={{ position: "relative" }}>
             <img
-              src="https://images.pexels.com/photos/1759531/pexels-photo-1759531.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2.jpg" // Replace this URL with the actual URL for the avatar image
+              src={profile.url}
               alt="User Avatar"
               style={{
                 width: "32px",

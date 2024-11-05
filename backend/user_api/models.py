@@ -4,8 +4,15 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    public_id = models.CharField(max_length=255, blank=True, null=True)
-    url = models.CharField(max_length=255, blank=True, null=True)
+    public_id = models.CharField(
+        max_length=255, blank=True, null=True, default="pf8iioqsmo9unsmegxrv"
+    )
+    url = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default="https://res.cloudinary.com/dzydn2faa/image/upload/v1730799486/pf8iioqsmo9unsmegxrv.jpg",
+    )
 
 
 class Contact(models.Model):
