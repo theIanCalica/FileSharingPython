@@ -269,7 +269,14 @@ def share_file(request):
 def list_shared_files(request):
     shared_files = SharedFile.objects.filter(shared_with=request.user)
     shared_files_data = [
-        {"id": sf.id, "file_name": sf.file.file_name, "shared_date": sf.shared_date}
+        {
+            "id": sf.id,
+            "file_name": sf.file.file_name,
+            "file_type": sf.file.file_type,
+            "shared_date": sf.shared_date,
+            "file_id": sf.file_id,
+            "username": sf.file.user.username,
+        }
         for sf in shared_files
     ]
 
