@@ -7,10 +7,11 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
-import MessageIcon from "@mui/icons-material/Message";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Link, useNavigate } from "react-router-dom";
-// import { logout } from "../../../Utils/helpers";
+import { logout } from "../../../utils/Helpers";
+import client from "../../../utils/client";
+
 import Swal from "sweetalert2";
 const Sidebar = ({ isMinimized }) => {
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ const Sidebar = ({ isMinimized }) => {
     }));
   };
 
-  const handleLogout = () => {
-    Swal.fire({
+  const handleLogout = async () => {
+    const result = await Swal.fire({
       title: "Are you sure?",
       text: "You will be logged out of your account!",
       icon: "warning",
@@ -41,18 +42,24 @@ const Sidebar = ({ isMinimized }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, log me out!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // logout(() => {
-        //   navigate("/");
-        // });
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await client.post(`${process.env.REACT_APP_API_LINK}/logout/`);
+        logout();
+        navigate("/");
+
         Swal.fire(
           "Logged Out!",
           "You have been logged out successfully.",
           "success"
         );
+      } catch (error) {
+        // Handle logout failure
+        Swal.fire("Error", "Failed to log out. Please try again.", "error");
       }
-    });
+    }
   };
 
   return (

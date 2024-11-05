@@ -60,8 +60,8 @@ const Profile = ({
     console.log("userToEdit:", user);
     if (user) {
       reset({
-        fname: user.fname,
-        lname: user.lname,
+        fname: user.first_name,
+        lname: user.last_name,
         email: user.email,
         phoneNumber: user.phoneNumber,
         dob: user.dob ? dayjs(user.dob) : null,
@@ -82,11 +82,8 @@ const Profile = ({
       fname: data.fname,
       lname: data.lname,
       email: data.email,
-      phoneNumber: data.phoneNumber,
-      dob: data.dob.toISOString(),
+      username: data.username,
     };
-
-    console.log(user);
 
     const url = `${process.env.REACT_APP_API_LINK}/users/${user._id}`;
     const method = "PUT";
@@ -125,93 +122,71 @@ const Profile = ({
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           <div className="mb-4">
-            <label htmlFor="fname" className="block text-gray-700 mb-2">
+            <label htmlFor="first_name" className="block text-gray-700 mb-2">
               First Name
             </label>
             <input
-              id="fname"
+              id="first_name"
               type="text"
               className={`w-full px-3 py-2 border border-gray-300 rounded-md h-14 ${getBorderColor(
-                "fname",
+                "first_name",
                 errors,
                 touchedFields
               )}`}
-              {...register("fname", { required: "First Name is required" })}
+              {...register("first_name", {
+                required: "First Name is required",
+              })}
             />
-            {errors.fname && (
+            {errors.first_name && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.fname.message}
+                {errors.first_name.message}
               </p>
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="lname" className="block text-gray-700 mb-2">
+            <label htmlFor="last_name" className="block text-gray-700 mb-2">
               Last Name
             </label>
             <input
-              id="lname"
+              id="last_name"
               type="text"
               className={`w-full px-3 py-2 border border-gray-300 rounded-md h-14 ${getBorderColor(
-                "lname",
+                "last_name",
                 errors,
                 touchedFields
               )}`}
-              {...register("lname", { required: "Last Name is required" })}
+              {...register("last_name", { required: "Last Name is required" })}
             />
-            {errors.lname && (
+            {errors.last_name && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.lname.message}
+                {errors.last_name.message}
               </p>
             )}
           </div>
-          <div className="mb-4">
-            <label htmlFor="dob" className="block text-gray-700 mb-2">
-              Date of Birth
-            </label>
-            <Controller
-              name="dob"
-              rules={{ required: "Date of Birth is required" }}
-              control={control}
-              render={({ field }) => (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <div className="w-full">
-                    <Box
-                      sx={{
-                        width: "100%", // Ensure Box takes full width of its container
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "8px", // Custom border radius
-                          width: "100%",
-                          "& fieldset": {
-                            borderColor: errors.dob ? "#f87171" : "#e5e7eb", // Conditional border color
-                          },
-                          "&:hover fieldset": {
-                            borderColor: errors.dob ? "#f87171" : "#0056b3", // Conditional border color on hover
-                          },
-                        },
-                      }}
-                    >
-                      <DatePicker
-                        {...field}
-                        className="MuiDayCalendar-header MuiDayCalendar-weekContainer"
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            fullWidth // Make the TextField take up all available space
-                            onBlur={() => field.onBlur()}
-                          />
-                        )}
-                      />
-                    </Box>
-                  </div>
-                </LocalizationProvider>
-              )}
-            />
 
-            {errors.dob && (
-              <p className="text-red-500 text-sm mt-1">{errors.dob.message}</p>
+          {/* Username */}
+          <div className="mb-4">
+            <label htmlFor="username" className="block text-gray-700 mb-2">
+              Last Name
+            </label>
+            <input
+              id="username"
+              type="text"
+              className={`w-full px-3 py-2 border border-gray-300 rounded-md h-14 ${getBorderColor(
+                "username",
+                errors,
+                touchedFields
+              )}`}
+              {...register("username", { required: "Last Name is required" })}
+            />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.username.message}
+              </p>
             )}
           </div>
 
+          {/* Email */}
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 mb-2">
               Email

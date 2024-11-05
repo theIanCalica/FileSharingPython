@@ -13,6 +13,9 @@ const Home = () => {
     navigate("/signup");
   };
 
+  const handleAboutUsClick = () => {
+    navigate("/about-us");
+  };
   return (
     <div>
       {/* Carousel Section */}
@@ -108,7 +111,9 @@ const Home = () => {
             </p>
           </div>
           <div className="fourth-div">
-            <button className="more-info-button">More About Us</button>
+            <button className="more-info-button" onClick={handleAboutUsClick}>
+              More About Us
+            </button>
           </div>
         </div>
       </div>
@@ -181,7 +186,9 @@ const Home = () => {
 
         {/* Fifth Div */}
         <div className="benefits-signup">
-          <button className="signup-button">Free Sign Up</button>
+          <button className="signup-button" onClick={handleSignUpClick}>
+            Free Sign Up
+          </button>
         </div>
       </div>
       {/* New Floating Section */}

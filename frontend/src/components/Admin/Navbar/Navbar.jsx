@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Menu } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-// import { getUser } from "../../../Utils/helpers";
 import { useNavigate, NavLink } from "react-router-dom";
-// import { logout } from "../../../Utils/helpers";
+import { logout, getUser } from "../../../utils/Helpers";
 import Swal from "sweetalert2";
-
+import client from "../../../utils/client";
 const Navbar = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,8 +28,8 @@ const Navbar = ({ toggleSidebar }) => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const handleLogout = () => {
-    Swal.fire({
+  const handleLogout = async () => {
+    const result = await Swal.fire({
       title: "Are you sure?",
       text: "You will be logged out of your account!",
       icon: "warning",
@@ -39,18 +37,24 @@ const Navbar = ({ toggleSidebar }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, log me out!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // logout(() => {
-        //   navigate("/");
-        // });
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await client.post(`${process.env.REACT_APP_API_LINK}/logout/`);
+        logout();
+        navigate("/");
+
         Swal.fire(
           "Logged Out!",
           "You have been logged out successfully.",
           "success"
         );
+      } catch (error) {
+        // Handle logout failure
+        Swal.fire("Error", "Failed to log out. Please try again.", "error");
       }
-    });
+    }
   };
 
   return (
