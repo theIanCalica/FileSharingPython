@@ -239,11 +239,13 @@ def file_delete_view(request, pk):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def share_file(request):
-    file_id = request.POST.get("file_id")
-    shared_with_id = request.POST.get("shared_with_id")
 
+    file_id = request.data.get("file_id")
+    username = request.data.get("username")  # Change this line
+    print(file_id)
+    print(username)
     file = get_object_or_404(File, id=file_id, user=request.user)
-    shared_with = get_object_or_404(User, id=shared_with_id)
+    shared_with = get_object_or_404(User, username=username)  # Change this line
 
     shared_file, created = SharedFile.objects.get_or_create(
         file=file, shared_with=shared_with
