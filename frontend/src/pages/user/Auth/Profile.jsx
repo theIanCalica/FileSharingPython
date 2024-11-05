@@ -12,6 +12,7 @@ const Profile = () => {
   const handleClosePasswordModal = () => {
     setIsPasswordModalOpen(false);
   };
+
   return (
     <>
       <h1 className="font-bold font-sans text-2xl text-center my-6">

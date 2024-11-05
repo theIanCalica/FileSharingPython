@@ -2,13 +2,24 @@ import React, { useEffect, useState } from "react";
 import client from "../../../utils/client";
 import { formatDate, notifyError, notifySuccess } from "../../../utils/Helpers";
 import Swal from "sweetalert2";
+import UserModal from "../../../components/User/Auth/Modals/UserModal";
 
 const Files = () => {
   const [files, setFiles] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [uploading, setUploading] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [selectedFileId, setSelectedFileId] = useState(null);
+
+  const handleOpenModal = (fileId) => {
+    setSelectedFileId(fileId); // Store the selected file ID
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const fetchFiles = async () => {
     try {
@@ -287,6 +298,12 @@ const Files = () => {
                           Decrypt
                         </button>
                         <button
+                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition duration-200"
+                          onClick={() => handleOpenModal(file.id)}
+                        >
+                          Share
+                        </button>
+                        <button
                           onClick={() => handleDelete(file.id)}
                           className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition duration-200"
                         >
@@ -304,7 +321,6 @@ const Files = () => {
       {uploading && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
           <div className="bg-white p-8 w-96 rounded-lg shadow-lg">
-            {" "}
             {/* Increased padding and width */}
             <h3 className="text-2xl font-semibold mb-4 text-center">
               Uploading...
@@ -323,6 +339,14 @@ const Files = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {isModalOpen && (
+        <UserModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          fileId={selectedFileId}
+        />
       )}
     </div>
   );
