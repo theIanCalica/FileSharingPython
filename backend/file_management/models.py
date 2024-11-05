@@ -28,9 +28,6 @@ class SharedFile(models.Model):
     shared_with = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="shared_files"
     )
-    access_level = models.CharField(
-        max_length=50, choices=[("view", "View"), ("edit", "Edit")]
-    )
     shared_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

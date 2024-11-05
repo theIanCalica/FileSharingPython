@@ -14,8 +14,11 @@ from Crypto.Random import get_random_bytes
 import base64
 from django.http import FileResponse
 import io
+import uuid
+from django.utils import timezone
 import mimetypes
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
 
 
 # Get the total file size upload the user has
@@ -231,3 +234,97 @@ def file_delete_view(request, pk):
             )
     except File.DoesNotExist:
         return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def share_file(request):
+    file_id = request.POST.get("file_id")
+    shared_with_id = request.POST.get("shared_with_id")
+
+    file = get_object_or_404(File, id=file_id, user=request.user)
+    shared_with = get_object_or_404(User, id=shared_with_id)
+
+    shared_file, created = SharedFile.objects.get_or_create(
+        file=file, shared_with=shared_with
+    )
+
+    return Response(
+        {
+            "message": (
+                "File shared successfully."
+                if created
+                else "File already shared with this user."
+            ),
+            "shared_file_id": shared_file.id,
+        },
+        status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def list_shared_files(request):
+    shared_files = SharedFile.objects.filter(shared_with=request.user)
+    shared_files_data = [
+        {"id": sf.id, "file_name": sf.file.file_name, "shared_date": sf.shared_date}
+        for sf in shared_files
+    ]
+
+    return Response(shared_files_data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_link_share(request):
+    file_id = request.POST.get("file_id")
+    expiration_date = request.POST.get("expiration_date")
+
+    # Fetch the file, ensuring it belongs to the authenticated user
+    file = get_object_or_404(File, id=file_id, user=request.user)
+
+    # Parse and validate expiration_date, if provided
+    expiration = None
+    if expiration_date:
+        try:
+            expiration = timezone.datetime.strptime(expiration_date, "%Y-%m-%d").date()
+        except ValueError:
+            return Response(
+                {"error": "Invalid date format. Use YYYY-MM-DD."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    # Create a unique share link
+    unique_link = f"share-{uuid.uuid4()}"
+
+    # Create the LinkShare instance
+    link_share = LinkShare.objects.create(
+        file=file,
+        share_link=unique_link,
+        expiration_date=expiration,
+    )
+
+    # Return a success response with the link share details
+    return Response(
+        {
+            "message": "Link share created successfully.",
+            "link_share_id": link_share.id,
+            "share_link": link_share.share_link,
+        },
+        status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def remove_shared_file(request, shared_file_id):
+    shared_file = get_object_or_404(
+        SharedFile, id=shared_file_id, shared_with=request.user
+    )
+
+    shared_file.delete()  # Remove the SharedFile entry to revoke access for this user
+
+    return Response(
+        {"message": "Access to the file has been removed successfully."},
+        status=status.HTTP_204_NO_CONTENT,
+    )

@@ -91,11 +91,20 @@ const Sidebar = () => {
     navigate("/drive/files");
   };
 
+  const handleHomeClick = () => {
+    navigate("/drive");
+  };
+
+  const handleSharedClick = () => {
+    navigate("/drive/shared-with-me");
+  };
+
   return (
     <div style={{ width: "250px", padding: "10px" }}>
       <div
-        className="flex-col mt-10"
+        className="flex-col mt-10 cursor-pointer"
         style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
+        onClick={handleHomeClick}
       >
         <img src="/images/logo.png" alt="Drive Logo" height={100} width={100} />
         <h5 style={{ marginLeft: "10px" }} className="poppins-light">
@@ -159,6 +168,7 @@ const Sidebar = () => {
       <div style={{ marginBottom: "20px" }}>
         <Button
           startIcon={<HomeIcon />}
+          onClick={handleHomeClick}
           style={{
             justifyContent: "flex-start",
             width: "100%",
@@ -180,6 +190,7 @@ const Sidebar = () => {
         </Button>
         <Button
           startIcon={<PeopleIcon />}
+          onClick={handleSharedClick}
           style={{
             justifyContent: "flex-start",
             width: "100%",

@@ -27,6 +27,16 @@ urlpatterns = [
     path("contact/<int:pk>/update", update_contact, name="update-contact"),
     path("contact-count/", get_contact_count, name="contact-count"),
     path("deactivated-count/", get_deactivated_count, name="deactivated-count"),
+    path("files/share/", share_file, name="share_file"),  # Create share
+    path(
+        "files/shared/", list_shared_files, name="list_shared_files"
+    ),  # Read shared files
+    path(
+        "files/shared/delete/<int:pk>/", remove_shared_file, name="delete_shared_file"
+    ),  # Delete share
+    path(
+        "files/link-share/", create_link_share, name="create_link_share"
+    ),  # Create link share
 ]
 
 # Include the router-generated URLs
