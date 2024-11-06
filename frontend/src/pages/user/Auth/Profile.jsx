@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { getUser } from "../../../utils/Helpers";
+import { getUser, notifyError, notifySuccess } from "../../../utils/Helpers";
 import ChangePassword from "../../../components/User/Auth/Modals/ChangePassword";
+import client from "../../../utils/client";
+import { useNavigate } from "react-router-dom";
+
 const Profile = () => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const user = getUser();
@@ -11,6 +14,19 @@ const Profile = () => {
 
   const handleClosePasswordModal = () => {
     setIsPasswordModalOpen(false);
+  };
+
+  const handleDelete = async () => {
+    await client
+      .delete(`${process.env.REACT_APP_API_LINK}/users/`, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        notifySuccess("Account successfully deleted");
+      })
+      .catch((error) => {
+        notifyError("Something went wrong");
+      });
   };
 
   return (
@@ -89,6 +105,12 @@ const Profile = () => {
           </button>
           <button className="w-full md:w-auto bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
             Deactivate Account
+          </button>
+          <button
+            onClick={handleDelete}
+            className="w-full md:w-auto bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
+          >
+            Delete Account
           </button>
         </div>
         {isPasswordModalOpen && (
