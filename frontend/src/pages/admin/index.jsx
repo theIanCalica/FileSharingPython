@@ -6,7 +6,6 @@ import LineChart from "../../components/Admin/Chart/LineChart";
 import PieChart from "../../components/Admin/Chart/PieChart";
 import Map from "../../components/Admin/Map";
 import { notifySuccess, notifyError, getUser } from "../../utils/Helpers";
-import { ToastContainer } from "react-toastify";
 import client from "../../utils/client";
 
 const Home = () => {

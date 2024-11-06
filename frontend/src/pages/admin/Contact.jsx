@@ -4,12 +4,13 @@ import { notifySuccess, notifyError, formatDate } from "../../utils/Helpers";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Menu, MenuItem, IconButton } from "@mui/material";
-import ContactModal from "../../components/Admin/Modal/Contact";
+import ContactModal from "../../components/Admin/Modal/ContactModal";
 
 const Contact = () => {
   const [contacts, setContacts] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedContact, setSelectedContact] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchContacts = async () => {
     await client
@@ -20,6 +21,17 @@ const Contact = () => {
       .catch(() => {
         notifyError("Error fetching contacts");
       });
+  };
+
+  const openModal = (contact = null) => {
+    setSelectedContact(contact);
+    console.log("Opening modal with contact:", contact);
+    setIsModalOpen(true); // Open modal after setting the contact
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedContact(null);
   };
 
   const handleMenuClick = (event, contact) => {
@@ -33,7 +45,8 @@ const Contact = () => {
   };
 
   const handleEdit = () => {
-    // openModal(selectedContact);
+    console.log("Selected Contact:", selectedContact);
+    openModal(selectedContact);
     handleMenuClose();
   };
 
@@ -94,6 +107,16 @@ const Contact = () => {
           </table>
         </div>
       </div>
+
+      {/* Render ContactModal and pass selectedContact and onClose props */}
+      {isModalOpen && (
+        <ContactModal
+          open={isModalOpen}
+          contact={selectedContact}
+          onClose={closeModal}
+          onSuccess={fetchContacts}
+        />
+      )}
     </>
   );
 };

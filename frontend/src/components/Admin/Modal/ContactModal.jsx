@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import Select from "react-select"; // Importing react-select
 import { getUser, notifySuccess, notifyError } from "../../../utils/Helpers";
 import { ToastContainer } from "react-toastify";
 
-const ContactModal = ({ onClose, onOpen, contact }) => {
+const ContactModal = ({ onClose, open, contact, onSuccess }) => {
   const {
     register,
     handleSubmit,
-    reset, // Added to reset form values
+    reset,
+    control, // Added for react-select
     formState: { errors, touchedFields },
   } = useForm();
 
-  // Use useEffect to set the form values when contact changes
   useEffect(() => {
-    console.log(contact);
+    console.log("Received contact in Modal:", contact);
     reset({
       name: contact?.name || "",
       email: contact?.email || "",
@@ -37,18 +37,16 @@ const ContactModal = ({ onClose, onOpen, contact }) => {
       })
       .then((response) => {
         console.log(response);
-        notifySuccess("Contact updated successfully!"); // Updated success message
-        onClose(); // Close the modal on success
+        notifySuccess("Contact updated successfully!");
+        onClose();
+        onSuccess(); // Refresh contact list on success
       })
       .catch((error) => {
-        if (error.response) {
-          const errorMessage = error.response.data.msg;
-          console.log(errorMessage);
-          notifyError(errorMessage);
-        } else {
-          console.log(error.message);
-          notifyError(error.message);
-        }
+        const errorMessage = error.response
+          ? error.response.data.msg
+          : error.message;
+        console.log(errorMessage);
+        notifyError(errorMessage);
       });
   };
 
@@ -58,14 +56,12 @@ const ContactModal = ({ onClose, onOpen, contact }) => {
     { value: "resolved", label: "Resolved" },
   ];
 
-  // Return null if the modal is not open
-  if (!onOpen) return null;
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-xl font-bold mb-4">Contact Details</h2>{" "}
-        {/* Updated title */}
+        <h2 className="text-xl font-bold mb-4">Contact Details</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700 mb-2">
@@ -106,13 +102,21 @@ const ContactModal = ({ onClose, onOpen, contact }) => {
             <label htmlFor="status" className="block text-gray-700 mb-2">
               Status
             </label>
-            <Select
-              id="status"
-              options={statusOptions}
+            <Controller
+              name="status"
+              control={control}
               defaultValue={statusOptions.find(
                 (option) => option.value === contact?.status
               )}
-              {...register("status")}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={statusOptions}
+                  onChange={(selectedOption) =>
+                    field.onChange(selectedOption.value)
+                  }
+                />
+              )}
             />
           </div>
           <div className="flex justify-end">

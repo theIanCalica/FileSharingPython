@@ -282,7 +282,7 @@ const Sidebar = ({ isMinimized }) => {
             style={{
               backgroundColor:
                 hovered === "profile" || selected === "profile"
-                  ? "#FAFAFB"
+                  ? "#D9DDE8"
                   : "transparent",
             }}
           >
@@ -300,7 +300,7 @@ const Sidebar = ({ isMinimized }) => {
               />
             </div>
             <span
-              className={`transition-all ease-in-out duration-500 ${
+              className={`transition-all ease-in-out duration-500 text-gray-500 ${
                 isMinimized ? "hidden" : "block"
               }`}
               style={{
@@ -325,7 +325,7 @@ const Sidebar = ({ isMinimized }) => {
           style={{
             backgroundColor:
               hovered === "logout" || selected === "logout"
-                ? "#FAFAFB"
+                ? "#D9DDE8"
                 : "transparent",
           }}
         >
@@ -341,7 +341,7 @@ const Sidebar = ({ isMinimized }) => {
             />
           </div>
           <span
-            className={`transition-all ease-in-out duration-500 ${
+            className={`text-gray-500 transition-all ease-in-out duration-500 ${
               isMinimized ? "hidden" : "block"
             }`}
             style={{
