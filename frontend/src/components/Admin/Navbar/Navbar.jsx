@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Menu } from "@mui/icons-material";
-import SearchIcon from "@mui/icons-material/Search";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useNavigate, NavLink } from "react-router-dom";
-import { logout, getUser } from "../../../utils/Helpers";
+import { logout, getUser, getProfile } from "../../../utils/Helpers";
 import Swal from "sweetalert2";
 import client from "../../../utils/client";
 const Navbar = ({ toggleSidebar }) => {
@@ -14,8 +13,8 @@ const Navbar = ({ toggleSidebar }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  // const user = getUser();
-
+  const user = getUser();
+  const profile = getProfile();
   const handleSearch = () => {
     console.log("Search for:", searchTerm);
   };
@@ -72,36 +71,6 @@ const Navbar = ({ toggleSidebar }) => {
         </button>
       </div>
       <div className="ml-auto flex items-center w-full">
-        {/* Search */}
-        <div
-          className="flex items-center h-12 w-80 overflow-hidden"
-          style={{ backgroundColor: "#EEF0FA" }}
-        >
-          <button
-            onClick={handleSearch}
-            className="text-gray-700 p-2 flex items-center justify-center"
-            style={{
-              width: "36px",
-              height: "36px",
-              backgroundColor: "#EEF0FA",
-            }}
-          >
-            <SearchIcon
-              style={{ fontSize: "15px" }}
-              className="text-gray-400"
-            />
-          </button>
-          <input
-            type="text"
-            name="search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="outline-none border-none w-52 pr-3 py-2 flex-grow text-sm text-black"
-            placeholder="Search..."
-            style={{ backgroundColor: "#EEF0FA" }}
-          />
-        </div>
-
         {/* Right Side Icons */}
         <div className="flex items-center ml-auto space-x-4">
           <NavLink to={"/admin/email"}>
@@ -116,11 +85,11 @@ const Navbar = ({ toggleSidebar }) => {
               className="text-black flex items-center gap-3"
             >
               <img
-                // src={user.profile.url}
+                src={profile.url}
                 alt="User Profile Pic"
-                className="rounded-full w-12 h-12"
+                className="rounded-full w-10 h-10 object-cover"
               />
-              {/* <span>{user.fname + " " + user.lname}</span> */}
+              <span>{user.first_name + " " + user.last_name}</span>
               <KeyboardArrowDownOutlinedIcon
                 className=""
                 style={{ fontSize: "15px" }}

@@ -41,7 +41,6 @@ const Profile = ({
   const {
     register,
     handleSubmit,
-    control,
     reset,
     setError,
     formState: { errors, touchedFields },
@@ -51,8 +50,7 @@ const Profile = ({
       fname: "",
       lname: "",
       email: "",
-      phoneNumber: "",
-      dob: null,
+      username: "",
     },
   });
 
@@ -63,17 +61,16 @@ const Profile = ({
         fname: user.first_name,
         lname: user.last_name,
         email: user.email,
-        phoneNumber: user.phoneNumber,
-        dob: user.dob ? dayjs(user.dob) : null,
+        username: user.username,
       });
     }
   }, [user, reset]);
 
   const [isEmailUnique, setIsEmailUnique] = useState(true);
-  const [isPhoneNumberUnique, setIsPhoneNumberUnique] = useState(true);
+  const [isUsernameUnique, setIsUsernameUnique] = useState(true);
 
   const onSubmit = (data) => {
-    if (!isEmailUnique || !isPhoneNumberUnique) {
+    if (!isEmailUnique || !isUsernameUnique) {
       notifyError("Email or Phone Number must be unique");
       return; // Prevent submission
     }

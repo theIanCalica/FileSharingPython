@@ -1,6 +1,7 @@
 import React from "react";
 import { PersonOutlineOutlined as PersonOutlineOutlinedIcon } from "@mui/icons-material";
 import { MonetizationOnOutlined as MonetizationOnOutlinedIcon } from "@mui/icons-material";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { useNavigate } from "react-router-dom";
@@ -53,14 +54,13 @@ const Widget = ({ type, count }) => {
         ),
       };
       break;
-    case "Deactivated":
+    case "File":
       data = {
-        title: "Deactivated",
+        title: "All Files",
         count: count,
-        url: "/admin/user-deactivated/",
-        link: "View all deactivated users",
+        link: "",
         icon: (
-          <PersonOffIcon
+          <FileCopyIcon
             style={{
               width: "4rem",
               height: "4rem",

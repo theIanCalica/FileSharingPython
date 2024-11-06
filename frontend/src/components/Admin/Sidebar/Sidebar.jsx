@@ -101,7 +101,7 @@ const Sidebar = ({ isMinimized }) => {
             style={{
               backgroundColor:
                 hovered === "dashboard" || selected === "dashboard"
-                  ? "#161621"
+                  ? "#D9DDE8"
                   : "transparent",
             }}
           >
@@ -141,7 +141,7 @@ const Sidebar = ({ isMinimized }) => {
             style={{
               backgroundColor:
                 hovered === "task" || selected === "task"
-                  ? "#FAFAFB"
+                  ? "#D9DDE8"
                   : "transparent",
             }}
           >
@@ -178,7 +178,7 @@ const Sidebar = ({ isMinimized }) => {
             style={{
               backgroundColor:
                 hovered === "users" || selected === "users"
-                  ? "#FAFAFB"
+                  ? "#D9DDE8"
                   : "transparent",
             }}
           >
@@ -194,7 +194,7 @@ const Sidebar = ({ isMinimized }) => {
               />
             </div>
             <span
-              className={`transition-all ease-in-out duration-500 ${
+              className={`text-gray-500 transition-all ease-in-out duration-500 ${
                 isMinimized ? "hidden" : "block"
               }`}
               style={{
@@ -206,7 +206,7 @@ const Sidebar = ({ isMinimized }) => {
           </li>
         </Link>
 
-        <li
+        {/* <li
           className="mt-3 py-2 px-8 text-gray-400 cursor-pointer flex items-center w-full transition-colors duration-300 ease-in-out relative"
           onMouseOver={() => setHovered("foods")}
           onMouseOut={() => setHovered(null)}
@@ -264,7 +264,7 @@ const Sidebar = ({ isMinimized }) => {
               </li>
             </Link>
           </ul>
-        )}
+        )} */}
         <h1
           className={`text-gray-400 font-sans px-8 pt-1 ${
             isMinimized ? "hidden" : "block"

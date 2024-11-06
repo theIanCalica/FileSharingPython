@@ -1,13 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import {
-  getUser,
-  formatDate,
-  notifySuccess,
-  notifyError,
-  getBorderColor,
-} from "../../../utils/Helpers";
+import { getUser, notifyError, getBorderColor } from "../../../utils/Helpers";
 import { ToastContainer } from "react-toastify";
 
 const ChangePasswordModal = ({ onClose }) => {
@@ -124,7 +118,7 @@ const ChangePasswordModal = ({ onClose }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-md font-semibold border-2 text-green-500 border-green-500 hover:bg-green-500 hover:text-white"
+              className="px-4 py-2 rounded-md font-semibold border-2 text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white"
             >
               Update
             </button>

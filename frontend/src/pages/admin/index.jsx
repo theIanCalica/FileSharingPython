@@ -14,8 +14,8 @@ const Home = () => {
   const user = getUser();
   const [userCount, setUserCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
-  const [deactivateCount, setDeactivateCount] = useState(0);
-
+  const [fileCount, setFileCount] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(true);
   const getNumberofUsers = async () => {
     try {
       const response = await client.get(
@@ -47,28 +47,11 @@ const Home = () => {
     }
   };
 
-  const getNumberofDeactivated = async () => {
-    try {
-      await client
-        .get(`${process.env.REACT_APP_API_LINK}/deactivated-count/`)
-        .then((response) => {
-          console.log(response.data);
-          setDeactivateCount(response.data.deactivated_count);
-        })
-        .catch((error) => {
-          notifyError("Error fetching number of contacts");
-          console.error("Error fetching number of contacts:", error);
-        });
-    } catch (err) {
-      notifyError("Error fetching number of contacts");
-      console.error("Error fetching number of contacts:", err);
-    }
-  };
-
+  const getNumberOfFiles = async () => {};
   useEffect(() => {
     getNumberofUsers();
     getNumberOfContact();
-    getNumberofDeactivated();
+    getNumberOfFiles();
 
     if (loggedIn && user && user.is_superuser === true) {
       notifySuccess("Successfully logged in");
@@ -76,16 +59,30 @@ const Home = () => {
   }, [loggedIn]);
   return (
     <div>
-      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-      <p className="mt-4">
-        Welcome to the admin dashboard. Here you can manage all aspects of your
-        application.
-      </p>
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+
+      {showWelcome && (
+        <div className="mt-5 bg-green-100 border border-green-200 text-green-800 p-4 shadow-md rounded-lg relative">
+          <button
+            className="absolute top-2 right-2 text-green-800 hover:text-green-900"
+            onClick={() => setShowWelcome(false)}
+          >
+            &times;
+          </button>
+          <h2 className="text-xl font-semibold">
+            Welcome, {user ? user.first_name + " " + user.last_name : "User"}!
+          </h2>
+          <p className="mt-2">
+            We are glad to have you on board. This is your admin dashboard where
+            you can manage all aspects of the application.
+          </p>
+        </div>
+      )}
 
       <div className="flex mt-5 justify-between items-center">
         <Widget type="User" count={userCount}></Widget>
         <Widget type="Contact" count={contactCount}></Widget>
-        <Widget type="Deactivated" count={deactivateCount}></Widget>
+        <Widget type="File" count={fileCount}></Widget>
       </div>
       <div className="container mt-5 bg-white p-4 shadow-md rounded-lg ">
         <BarChart />
@@ -104,7 +101,6 @@ const Home = () => {
       <div className="container mt-5 bg-white p-4 shadow-md rounded-lg">
         <Map />
       </div>
-      <ToastContainer />
     </div>
   );
 };
