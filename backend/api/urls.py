@@ -42,6 +42,9 @@ urlpatterns = [
     ),
     path("reset-password/", reset_password, name="reset-password"),
     path("email-send", send_email_with_attachment, name="email-send"),
+    path(
+        "profile/change-picture/", change_profile_picture, name="change_profile_picture"
+    ),
 ]
 
 # Include the router-generated URLs

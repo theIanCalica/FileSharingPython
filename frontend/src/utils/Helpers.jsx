@@ -15,6 +15,14 @@ export const setToken = (data) => {
   }
 };
 
+export const setProfile = (data) => {
+  if (typeof window !== "undefined" && window.localStorage) {
+    console.log(data);
+    // Save to localStorage
+    localStorage.setItem("profile", JSON.stringify(data.profile));
+  }
+};
+
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const getToken = () => {

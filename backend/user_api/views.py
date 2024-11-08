@@ -22,6 +22,39 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.core.mail import EmailMessage
 
 
+# Change profile picture
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def change_profile_picture(request):
+    user_profile = request.user.userprofile
+    file = request.FILES.get("profile_picture")
+
+    # Debugging: Check if the file is coming through correctly
+    print(f"Received file: {file.name}")
+
+    if not file:
+        return Response(
+            {"error": "No image provided."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        # Call the model's method to save the profile picture
+        user_profile.save_profile_picture(file)
+        serializer = UserProfileSerializer(user_profile)
+        return Response(
+            {
+                "message": "Profile picture updated successfully",
+                "profile": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+    except Exception as e:
+        return Response(
+            {"error": "Failed to update profile picture"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def reset_password_request(request):
