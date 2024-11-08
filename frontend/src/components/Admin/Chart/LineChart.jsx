@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
+import client from "../../../utils/client";
+import { notifyError } from "../../../utils/Helpers";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,7 +25,35 @@ ChartJS.register(
 );
 
 const LineChart = () => {
-  // Data for the number of "Contact Us" messages received each month
+  const [contacts, setContacts] = useState([]);
+  const [monthlyData, setMonthlyData] = useState(new Array(12).fill(0));
+
+  const fetchContacts = async () => {
+    try {
+      const response = await client.get("/contact-list/");
+      setContacts(response.data);
+    } catch {
+      notifyError("Error fetching contacts");
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  useEffect(() => {
+    // Calculate the number of messages per month
+    const counts = new Array(12).fill(0); // Initialize an array with 12 months
+
+    contacts.forEach((contact) => {
+      const month = new Date(contact.created_at).getMonth(); // Get month from created_at field
+      counts[month] += 1; // Increment the count for the respective month
+    });
+
+    setMonthlyData(counts);
+  }, [contacts]);
+
+  // Data for the LineChart
   const data = {
     labels: [
       "January",
@@ -42,7 +72,7 @@ const LineChart = () => {
     datasets: [
       {
         label: "Contact Us Messages",
-        data: [15, 22, 18, 10, 25, 20, 17, 23, 28, 30, 24, 32], // Example data: number of messages per month
+        data: monthlyData, // Use monthlyData as the chart's data
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 2,
@@ -53,7 +83,7 @@ const LineChart = () => {
     ],
   };
 
-  // Chart options with appropriate formatting for message counts
+  // Chart options
   const options = {
     responsive: true,
     plugins: {
@@ -67,7 +97,7 @@ const LineChart = () => {
       tooltip: {
         callbacks: {
           label: function (context) {
-            return `Messages: ${context.raw}`; // Tooltip showing the number of messages
+            return `Messages: ${context.raw}`;
           },
         },
       },
