@@ -132,7 +132,7 @@ const Sidebar = ({ isMinimized }) => {
             </span>
           </li>
         </Link>
-        <Link to="/admin/task">
+        {/* <Link to="/admin/task">
           <li
             className="mt-3 py-2 px-8 text-gray-400 cursor-pointer flex items-center w-full transition-colors duration-300 ease-in-out relative"
             onMouseOver={() => setHovered("task")}
@@ -167,7 +167,7 @@ const Sidebar = ({ isMinimized }) => {
               Task
             </span>
           </li>
-        </Link>
+        </Link> */}
         {/* Users */}
         <Link to="/admin/users">
           <li
@@ -322,9 +322,9 @@ const Sidebar = ({ isMinimized }) => {
                   : "transparent",
             }}
           >
-            {selected === "profile" && (
+            {/* {selected === "profile" && (
               <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-green-500" />
-            )}
+            )} */}
             <div className="mr-5 rounded-md transition-colors duration-300 ease-in-out">
               <PersonIcon
                 style={{
@@ -336,7 +336,7 @@ const Sidebar = ({ isMinimized }) => {
               />
             </div>
             <span
-              className={`transition-all ease-in-out duration-500 text-gray-500 ${
+              className={` text-gray-500 transition-all ease-in-out duration-500  ${
                 isMinimized ? "hidden" : "block"
               }`}
               style={{

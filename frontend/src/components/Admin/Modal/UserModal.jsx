@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { getBorderColor } from "../../../utils/Helpers";
+import { getBorderColor, getUser } from "../../../utils/Helpers";
 import client from "../../../utils/client";
 const UserModal = ({
   onClose,
@@ -12,6 +12,7 @@ const UserModal = ({
 }) => {
   const [isUsernameUnique, setIsUsernameUnique] = useState(true);
   const [isEmailUnique, setIsEmailUnique] = useState(true);
+  const user = getUser();
   const checkEmail = async (email) => {
     try {
       const response = await fetch("/api/check-email", {

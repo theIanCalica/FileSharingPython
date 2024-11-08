@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
 
@@ -6,12 +6,12 @@ import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 const PieChart = () => {
-  // Data for the pie chart
-  const data = {
-    labels: ["Pizza", "Burger", "Sushi", "Pasta", "Tacos"],
+  // Hard-coded data for the pie chart
+  const [fileData, setFileData] = useState({
+    labels: ["PDF", "JPEG", "PNG", "DOCX", "MP4"],
     datasets: [
       {
-        data: [150, 120, 90, 80, 70],
+        data: [300, 200, 150, 100, 50],
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
@@ -22,7 +22,36 @@ const PieChart = () => {
         hoverOffset: 4,
       },
     ],
-  };
+  });
+
+  // Uncomment this section to fetch data from the backend instead of using hard-coded data
+  /*
+  useEffect(() => {
+    const fetchFileData = async () => {
+      try {
+        const response = await client.get(`${process.env.REACT_APP_API_LINK}/top-file-types`, {
+          withCredentials: true,
+        });
+        const fileTypes = response.data.file_types;
+        
+        setFileData({
+          labels: fileTypes.map((file) => file.type),
+          datasets: [
+            {
+              data: fileTypes.map((file) => file.count),
+              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+              hoverOffset: 4,
+            },
+          ],
+        });
+      } catch (err) {
+        console.error("Error fetching file data:", err);
+      }
+    };
+
+    fetchFileData();
+  }, []);
+  */
 
   // Options for the pie chart
   const options = {
@@ -36,7 +65,7 @@ const PieChart = () => {
           label: function (context) {
             let label = context.label || "";
             if (context.parsed) {
-              label += `: ${context.raw} Orders`;
+              label += `: ${context.raw} Files`;
             }
             return label;
           },
@@ -46,19 +75,13 @@ const PieChart = () => {
   };
 
   return (
-    <div className="bg-white p-4 shadow-md rounded-lg w-full max-w-sm">
-      <h2 className="text-xl font-semibold mb-4">Top 5 Foods</h2>
-      <Pie data={data} options={options} />
-      <div className="flex justify-between items-center mt-6">
-        {/* Left side: View More */}
-        <div className="text-blue-500 cursor-pointer hover:underline">
-          View More
-        </div>
-
-        {/* Right side: Download Report */}
-        <button className="bg-transparent border border-green-500 text-green-500 px-4 py-2 rounded hover:bg-green-500 hover:text-white transition-colors duration-300">
-          Download Report
-        </button>
+    <div className="flex justify-center items-center ">
+      <div className="p-4 rounded-lg w-full max-w-sm mt-10">
+        <h2 className="text-xl font-semibold mb-4 text-center">
+          Top 5 Uploaded File Types
+        </h2>
+        <Pie data={fileData} options={options} />
+        <div className="flex justify-between items-center mt-6"></div>
       </div>
     </div>
   );

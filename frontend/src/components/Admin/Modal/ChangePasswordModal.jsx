@@ -4,7 +4,7 @@ import client from "../../../utils/client";
 import { getUser, notifyError, getBorderColor } from "../../../utils/Helpers";
 import { ToastContainer } from "react-toastify";
 
-const ChangePasswordModal = ({ onClose }) => {
+const ChangePassword = ({ onClose }) => {
   const {
     register,
     handleSubmit,
@@ -44,68 +44,74 @@ const ChangePasswordModal = ({ onClose }) => {
         <h2 className="text-xl font-bold mb-4">Change Password</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 mb-2">
+            <label
+              htmlFor="current_password"
+              className="block text-gray-700 mb-2"
+            >
               Current Password
             </label>
             <input
-              id="current"
+              id="current_password"
               type="password"
               className={`w-full px-3 py-2 border rounded-md ${getBorderColor(
-                "current",
+                "current_password",
                 errors,
                 touchedFields
               )}`}
-              {...register("current", {
+              {...register("current_password", {
                 required: "Current Password is required",
               })}
             />
-            {errors.current && (
+            {errors.current_password && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.current.message}
+                {errors.current_password.message}
               </p>
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 mb-2">
+            <label htmlFor="new_password" className="block text-gray-700 mb-2">
               New Password
             </label>
             <input
-              id="newPassword"
+              id="new_password"
               type="password"
               className={`w-full px-3 py-2 border rounded-md ${getBorderColor(
-                "newPassword",
+                "new_password",
                 errors,
                 touchedFields
               )}`}
-              {...register("newPassword", {
+              {...register("new_password", {
                 required: "New Password is required",
               })}
             />
-            {errors.newPassword && (
+            {errors.new_password && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.newPassword.message}
+                {errors.new_password.message}
               </p>
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 mb-2">
+            <label
+              htmlFor="confirm_password"
+              className="block text-gray-700 mb-2"
+            >
               Confirm Password
             </label>
             <input
-              id="confirm"
+              id="confirm_password"
               type="password"
               className={`w-full px-3 py-2 border rounded-md ${getBorderColor(
-                "confirm",
+                "confirm_password",
                 errors,
                 touchedFields
               )}`}
-              {...register("confirm", {
+              {...register("confirm_password", {
                 required: "Confirm Password is required",
               })}
             />
-            {errors.confirm && (
+            {errors.confirm_password && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.confirm.message}
+                {errors.confirm_password.message}
               </p>
             )}
           </div>
@@ -131,4 +137,4 @@ const ChangePasswordModal = ({ onClose }) => {
   );
 };
 
-export default ChangePasswordModal;
+export default ChangePassword;

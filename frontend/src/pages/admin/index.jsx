@@ -15,6 +15,7 @@ const Home = () => {
   const [contactCount, setContactCount] = useState(0);
   const [fileCount, setFileCount] = useState(0);
   const [showWelcome, setShowWelcome] = useState(true);
+
   const getNumberofUsers = async () => {
     try {
       const response = await client.get(
@@ -47,6 +48,7 @@ const Home = () => {
   };
 
   const getNumberOfFiles = async () => {};
+
   useEffect(() => {
     getNumberofUsers();
     getNumberOfContact();
@@ -56,6 +58,7 @@ const Home = () => {
       notifySuccess("Successfully logged in");
     }
   }, [loggedIn]);
+
   return (
     <div>
       <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -79,26 +82,36 @@ const Home = () => {
       )}
 
       <div className="flex mt-5 justify-between items-center">
-        <Widget type="User" count={userCount}></Widget>
-        <Widget type="Contact" count={contactCount}></Widget>
-        <Widget type="File" count={fileCount}></Widget>
+        <Widget type="User" count={userCount} />
+        <Widget type="Contact" count={contactCount} />
+        <Widget type="File" count={fileCount} />
       </div>
-      <div className="container mt-5 bg-white p-4 shadow-md rounded-lg ">
+
+      <div className="container mt-5 bg-white p-4 shadow-md rounded-lg">
         <BarChart />
 
         <div className="flex justify-between items-center mt-4">
           <div className="text-blue-500 cursor-pointer hover:underline">
             View More
           </div>
-
           <button className="bg-transparent border border-green-500 text-green-500 px-4 py-2 rounded hover:bg-green-500 hover:text-white transition-colors duration-300">
             Download Report
           </button>
         </div>
       </div>
 
+      {/* Container for BarChart, LineChart, and PieChart */}
+      <div className="flex flex-wrap container mt-5 gap-5   rounded-lg w-full ">
+        <div className="flex-grow basis-1/3 min-w-[300px] p-4 bg-white shadow rounded-lg">
+          <Map />
+        </div>
+        <div className="flex-grow basis-1/3 min-w-[300px] justify-center items-center p-4 bg-white shadow rounded-lg">
+          <PieChart />
+        </div>
+      </div>
+
       <div className="container mt-5 bg-white p-4 shadow-md rounded-lg">
-        <Map />
+        <LineChart />
       </div>
     </div>
   );

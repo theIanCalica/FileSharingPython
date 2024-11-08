@@ -119,10 +119,7 @@ const SignIn = () => {
             <p className="error-message">{errors.password.message}</p>
           )}
 
-          <div className="form-options">
-            <label>
-              <input type="checkbox" /> Remember me
-            </label>
+          <div className="form-options flex flex-row-reverse">
             <Link
               to="/reset-password"
               className="cursor-pointer hover:underline"

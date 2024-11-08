@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions
 from django.contrib.auth.models import User
@@ -227,6 +227,7 @@ class UserLogin(APIView):
     def post(self, request):
         data = request.data
         assert validate_username(data)
+        print(data)
         assert validate_password(data)
         serializer = UserLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
