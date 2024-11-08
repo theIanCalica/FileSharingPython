@@ -95,8 +95,26 @@ const Contact = () => {
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl)}
                       onClose={handleMenuClose}
+                      PaperProps={{
+                        style: {
+                          borderRadius: "4px", // Slight rounding
+                          boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.05)", // Light shadow for subtle effect
+                        },
+                      }}
                     >
-                      <MenuItem onClick={handleEdit}>
+                      <MenuItem
+                        onClick={handleEdit}
+                        style={{
+                          padding: "6px 12px", // Compact padding
+                          fontSize: "0.875rem", // Small font size for a subtle look
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.target.style.backgroundColor = "#f0f0f0")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.backgroundColor = "transparent")
+                        }
+                      >
                         <EditOutlinedIcon className="mr-2" /> Edit
                       </MenuItem>
                     </Menu>

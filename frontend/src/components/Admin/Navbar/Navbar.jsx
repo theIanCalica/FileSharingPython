@@ -8,6 +8,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { logout, getUser, getProfile } from "../../../utils/Helpers";
 import Swal from "sweetalert2";
 import client from "../../../utils/client";
+
 const Navbar = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,12 +16,9 @@ const Navbar = ({ toggleSidebar }) => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const user = getUser();
   const profile = getProfile();
+
   const handleSearch = () => {
     console.log("Search for:", searchTerm);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const toggleProfileDropdown = () => {
@@ -54,6 +52,13 @@ const Navbar = ({ toggleSidebar }) => {
         Swal.fire("Error", "Failed to log out. Please try again.", "error");
       }
     }
+
+    // Close the profile dropdown after logout
+    setIsProfileDropdownOpen(false);
+  };
+
+  const closeProfileDropdown = () => {
+    setIsProfileDropdownOpen(false);
   };
 
   return (
@@ -90,14 +95,11 @@ const Navbar = ({ toggleSidebar }) => {
                 className="rounded-full w-10 h-10 object-cover"
               />
               <span>{user.first_name + " " + user.last_name}</span>
-              <KeyboardArrowDownOutlinedIcon
-                className=""
-                style={{ fontSize: "15px" }}
-              />
+              <KeyboardArrowDownOutlinedIcon style={{ fontSize: "15px" }} />
             </button>
             {isProfileDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg">
-                <NavLink to={"/admin/profile"}>
+                <NavLink to={"/admin/profile"} onClick={closeProfileDropdown}>
                   <button className="flex gap-4 px-4 py-3 text-gray-700 justify-between hover:bg-gray-100 w-full text-left">
                     <span className="text-gray-700">Profile</span>
                     <PersonOutlineOutlinedIcon style={{ fontSize: "18px" }} />

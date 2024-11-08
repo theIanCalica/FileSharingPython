@@ -77,7 +77,7 @@ const Profile = () => {
                 {user?.email || "admin@example.com"}
               </p>
               <p className="text-gray-600 font-semibold capitalize mt-1">
-                Role: Administrator
+                Administrator
               </p>
             </div>
           </div>
