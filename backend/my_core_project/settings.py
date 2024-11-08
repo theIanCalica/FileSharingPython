@@ -5,6 +5,7 @@ import cloudinary.uploader
 import cloudinary.api
 from datetime import timedelta
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-1(mjh@n&%xk_gu78=y&h@a6wmg^gwzfvyk+lq0wx7ht+xke5y)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True") == "True"  # Ensures it's interpreted as a boolean
+DEBUG = False  # Ensures it's interpreted as a boolean
 AES_KEY = os.getenv("AES_KEY")
 ALLOWED_HOSTS = ["*"]
 
@@ -108,6 +109,12 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT"),
     }
 }
+DATABASES["default"] = dj_database_url.parse(
+    "postgresql://fireguard_user:iuFhSHjzYt2nJLeVYMJOEg0fzDwOSc1g@dpg-csmu6qdumphs73av1gvg-a.oregon-postgres.render.com/fireguard",
+    conn_max_age=600,
+    ssl_require=True,
+)
+
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
