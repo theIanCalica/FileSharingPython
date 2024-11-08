@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .serializers import *
 from rest_framework import status
 from .validations import *
@@ -19,6 +19,28 @@ from django.utils import timezone
 import mimetypes
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from .models import *
+from django.db.models import Count
+
+
+# GET ALL FILES FOR ADMIN
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_files(request):
+    try:
+        # Fetch all files and annotate with the count of each file type
+        file_counts = (
+            File.objects.values("file_type")
+            .annotate(count=Count("file_type"))
+            .order_by("-count")  # Sort by count in descending order
+        )[:5]
+
+        # Prepare the response format
+        result = {file["file_type"]: file["count"] for file in file_counts}
+
+        return Response(result, status=200)
+    except Exception as e:
+        return Response({"detail": str(e)}, status=500)
 
 
 # Get the total file size upload the user has

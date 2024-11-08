@@ -1,45 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import client from "../../../utils/client";
 
 // Register necessary components with Chart.js
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 const PieChart = () => {
-  // Hard-coded data for the pie chart
+  // Initialize fileData with empty structure for safety
   const [fileData, setFileData] = useState({
-    labels: ["PDF", "JPEG", "PNG", "DOCX", "MP4"],
-    datasets: [
-      {
-        data: [300, 200, 150, 100, 50],
-        backgroundColor: [
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-          "#4BC0C0",
-          "#9966FF",
-        ],
-        hoverOffset: 4,
-      },
-    ],
+    labels: [],
+    datasets: [],
   });
 
-  // Uncomment this section to fetch data from the backend instead of using hard-coded data
-  /*
   useEffect(() => {
     const fetchFileData = async () => {
       try {
-        const response = await client.get(`${process.env.REACT_APP_API_LINK}/top-file-types`, {
-          withCredentials: true,
-        });
-        const fileTypes = response.data.file_types;
-        
+        // Fetch file data from the backend API
+        const response = await client.get(
+          `${process.env.REACT_APP_API_LINK}/get-files`,
+          {
+            withCredentials: true, // Include credentials (cookies)
+          }
+        );
+        console.log(response.data); // Log the response data to check its structure
+
+        // Assuming the backend returns an object with file types as keys and counts as values
+        const fileTypes = response.data;
+
+        // Convert the object to arrays of labels and data
+        const labels = Object.keys(fileTypes);
+        const data = Object.values(fileTypes);
+
+        // Safely update state with the correct structure for the Pie chart
         setFileData({
-          labels: fileTypes.map((file) => file.type),
+          labels: labels,
           datasets: [
             {
-              data: fileTypes.map((file) => file.count),
-              backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+              data: data,
+              backgroundColor: [
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56",
+                "#4BC0C0",
+                "#9966FF",
+                "#FF9F40", // Add more colors if needed
+              ],
               hoverOffset: 4,
             },
           ],
@@ -49,9 +55,9 @@ const PieChart = () => {
       }
     };
 
+    // Call the function to fetch data when the component mounts
     fetchFileData();
   }, []);
-  */
 
   // Options for the pie chart
   const options = {

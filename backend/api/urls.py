@@ -44,6 +44,8 @@ urlpatterns = [
     path(
         "profile/change-picture/", change_profile_picture, name="change_profile_picture"
     ),
+    # for admin
+    path("get-files/", get_files, name="get-files"),
 ]
 
 # Include the router-generated URLs
