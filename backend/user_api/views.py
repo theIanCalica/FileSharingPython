@@ -18,6 +18,8 @@ from django.utils.crypto import get_random_string
 from django.conf import settings
 from datetime import datetime, timedelta
 import jwt
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.mail import EmailMessage
 
 
 @api_view(["POST"])
@@ -308,3 +310,33 @@ def update_contact(request, pk):
         )  # Change status to HTTP_200_OK
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def send_email_with_attachment(request):
+    # Parse the incoming multipart form data (file included)
+    request.parsers = [MultiPartParser, FormParser]
+
+    uploaded_file = request.FILES.get("file")
+
+    if uploaded_file:
+        # Prepare the email
+        email = EmailMessage(
+            "Subject here",
+            "Here is the message.",
+            settings.DEFAULT_FROM_EMAIL,
+            ["recipient@example.com"],
+        )
+
+        # Attach the file directly without saving it to the server
+        email.attach(
+            uploaded_file.name, uploaded_file.read(), uploaded_file.content_type
+        )
+        email.send()
+
+        return Response(
+            {"message": "Email sent successfully with the attachment."}, status=200
+        )
+    else:
+        return Response({"error": "No file provided."}, status=400)

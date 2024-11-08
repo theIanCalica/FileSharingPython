@@ -41,6 +41,7 @@ urlpatterns = [
         "reset-password-request", reset_password_request, name="reset-password-request"
     ),
     path("reset-password/", reset_password, name="reset-password"),
+    path("email-send", send_email_with_attachment, name="email-send"),
 ]
 
 # Include the router-generated URLs

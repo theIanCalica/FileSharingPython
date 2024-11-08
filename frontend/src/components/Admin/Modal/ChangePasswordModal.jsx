@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import client from "../../../utils/client";
 import { getUser, notifyError, getBorderColor } from "../../../utils/Helpers";
 import { ToastContainer } from "react-toastify";
 
@@ -16,11 +16,12 @@ const ChangePasswordModal = ({ onClose }) => {
     data.user = user;
     console.log(data);
 
-    axios
-      .put(`${process.env.REACT_APP_API_LINK}/auth/changePassword`, data, {
+    client
+      .put(`${process.env.REACT_APP_API_LINK}/change-password/`, data, {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       })
       .then((response) => {
         console.log(response);

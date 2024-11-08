@@ -11,7 +11,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../../utils/Helpers";
 import client from "../../../utils/client";
-
+import PhoneIcon from "@mui/icons-material/Phone";
 import Swal from "sweetalert2";
 const Sidebar = ({ isMinimized }) => {
   const navigate = useNavigate();
@@ -206,6 +206,42 @@ const Sidebar = ({ isMinimized }) => {
           </li>
         </Link>
 
+        <Link to="/admin/contacts">
+          <li
+            className="mt-3 py-2 px-8 text-gray-400 cursor-pointer flex items-center w-full transition-colors duration-300 ease-in-out relative"
+            onMouseOver={() => setHovered("contacts")}
+            onMouseOut={() => setHovered(null)}
+            onClick={() => handleItemClick("contacts")}
+            style={{
+              backgroundColor:
+                hovered === "contacts" || selected === "contacts"
+                  ? "#D9DDE8"
+                  : "transparent",
+            }}
+          >
+            {selected === "contacts" && <></>}
+            <div className="mr-5 rounded-md transition-colors duration-300 ease-in-out">
+              <PhoneIcon
+                style={{
+                  color: "#605BFF",
+                  fontSize: "1.7rem",
+                  lineHeight: "1",
+                }}
+                className="p-1"
+              />
+            </div>
+            <span
+              className={`text-gray-500 transition-all ease-in-out duration-500 ${
+                isMinimized ? "hidden" : "block"
+              }`}
+              style={{
+                fontSize: "16px",
+              }}
+            >
+              Contacts
+            </span>
+          </li>
+        </Link>
         {/* <li
           className="mt-3 py-2 px-8 text-gray-400 cursor-pointer flex items-center w-full transition-colors duration-300 ease-in-out relative"
           onMouseOver={() => setHovered("foods")}

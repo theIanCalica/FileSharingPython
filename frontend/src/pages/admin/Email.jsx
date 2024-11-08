@@ -37,12 +37,13 @@ const Email = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_LINK}/users/send-email`,
+        `${process.env.REACT_APP_API_LINK}/email-send`,
         formData, // Send FormData
         {
           headers: {
             "Content-Type": "multipart/form-data", // Use multipart/form-data
           },
+          withCredentials: true,
         }
       );
 

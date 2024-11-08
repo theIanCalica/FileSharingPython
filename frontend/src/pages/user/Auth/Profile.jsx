@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { getUser, notifyError, notifySuccess } from "../../../utils/Helpers";
+import {
+  getProfile,
+  getUser,
+  notifyError,
+  notifySuccess,
+} from "../../../utils/Helpers";
 import ChangePassword from "../../../components/User/Auth/Modals/ChangePassword";
 import client from "../../../utils/client";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const user = getUser();
-
+  const profile = getProfile();
+  const navigate = useNavigate();
   const handleOpenPasswordModal = () => {
     setIsPasswordModalOpen(true);
   };
@@ -16,17 +22,21 @@ const Profile = () => {
     setIsPasswordModalOpen(false);
   };
 
-  const handleDelete = async () => {
-    await client
-      .delete(`${process.env.REACT_APP_API_LINK}/users/`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        notifySuccess("Account successfully deleted");
-      })
-      .catch((error) => {
-        notifyError("Something went wrong");
-      });
+  const handleDelete = async (userID) => {
+    console.log(userID);
+    try {
+      const response = await client.delete(
+        `${process.env.REACT_APP_API_LINK}/users/${userID}/`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      navigate("/"); // Redirect after successful deletion
+      notifySuccess("Account successfully deleted");
+    } catch (error) {
+      notifyError("Something went wrong");
+    }
   };
 
   return (
@@ -38,7 +48,7 @@ const Profile = () => {
         <div className="w-full max-w-md text-center mb-6">
           <div className="relative mb-6">
             <img
-              src={"/images/image-slide-1.jpeg"}
+              src={profile.url}
               alt="Profile"
               className="w-32 h-32 rounded-full mx-auto mb-2 object-cover"
             />
@@ -103,11 +113,8 @@ const Profile = () => {
           >
             Change Password
           </button>
-          <button className="w-full md:w-auto bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
-            Deactivate Account
-          </button>
           <button
-            onClick={handleDelete}
+            onClick={() => handleDelete(user.id)}
             className="w-full md:w-auto bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
           >
             Delete Account

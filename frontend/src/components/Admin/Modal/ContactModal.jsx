@@ -129,7 +129,7 @@ const ContactModal = ({ onClose, open, contact, onSuccess }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-md font-semibold border-2 text-green-500 border-green-500 hover:bg-green-500 hover:text-white"
+              className="px-4 py-2 rounded-md font-semibold border-2 text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white"
             >
               Update
             </button>
