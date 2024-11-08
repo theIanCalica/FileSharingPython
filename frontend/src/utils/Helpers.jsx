@@ -51,6 +51,12 @@ export const getUser = () => {
   }
 };
 
+export const setUser = (data) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("user", JSON.stringify(data.user));
+  }
+};
+
 export const getProfile = () => {
   if (typeof window !== "undefined") {
     if (localStorage.getItem("profile")) {

@@ -6,7 +6,6 @@ from file_management.views import *
 # Set up the router for viewsets
 router = DefaultRouter()
 router.register(r"users", UserViewSet, basename="user")
-# router.register('folder', FolderViewSet, basename='folder')
 
 # Define urlpatterns with both router and custom paths
 urlpatterns = [

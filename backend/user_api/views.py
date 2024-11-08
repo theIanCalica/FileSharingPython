@@ -284,10 +284,13 @@ class UserViewSet(viewsets.ModelViewSet):
                 {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-        serializer = self.get_serializer(user, data=request.data)
+        serializer = UserDetailsSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            user_obj_serializer = UserObjSerializer(user)
+            return Response(
+                {"user": user_obj_serializer.data}, status=status.HTTP_200_OK
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
